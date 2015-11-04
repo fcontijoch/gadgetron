@@ -122,19 +122,35 @@ void hoCuConebeamProjectionOperator
 #ifdef USE_OMP
 #pragma omp parallel for
 #endif
-	for(  int y=0; y<ps_dims_in_pixels[1]; y++ ) {
-		for( int x=0; x<ps_dims_in_pixels[0]; x++ ) {
+    for(  int y=0; y<ps_dims_in_pixels[1]; y++ ) {
+        for( int x=0; x<ps_dims_in_pixels[0]; x++ ) {
 
-			double xx = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
-			double yy = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
-			double s = SAD * xx/SDD;
-			double v = SAD * yy/SDD;
+            if ( use_cyl_det )
+            {
+                std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Using Cylindrical Weights" << std::endl;
+                double psi_psi = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
+                double ee = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
 
-			// Equation 10.1, page 386 in Computed Tomography 2nd edition, Jiang Hsieh
-			//
+                double e = SAD * ee/SDD;
+                float  sin_psi = std::sin(psi_psi);
+                float  weight = 0.5*psi_psi*psi_psi/(sin_psi * sin_psi);
 
-			double value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
-			data[x+y*ps_dims_in_pixels[0]] = float(value);
+                double value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
+            }
+            else
+            {
+
+                double xx = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
+                double yy = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
+                double s = SAD * xx/SDD;
+                double v = SAD * yy/SDD;
+
+                // Equation 10.1, page 386 in Computed Tomography 2nd edition, Jiang Hsieh
+                //
+
+                double value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
+            }
+            data[x+y*ps_dims_in_pixels[0]] = float(value);
 		}
 	}
 	cosine_weights_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&weights));
