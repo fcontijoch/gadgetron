@@ -815,9 +815,17 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 		cuNDArray<float> *frequency_filter
 )
 {
+    printf("Input Parameters....\n");
+    printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
+    printf("Is_Dims_In_MM: X = %f , Y=%f, Z = %f\n",is_dims_in_mm[0],is_dims_in_mm[1],is_dims_in_mm[2]);
+    printf("Ps_Dims_In_MM: X = %f , Y=%f\n",ps_dims_in_mm[0],ps_dims_in_mm[1]);
+    printf("SDD: %f \n",SDD);
+    printf("SAD: %f \n",SAD);
+
 	//
 	// Validate the input
 	//
+    printf("Validating input....\n");
 
 	if( projections == 0x0 || image == 0x0 ){
 		throw std::runtime_error("Error: conebeam_backwards_projection: illegal array pointer provided");
@@ -839,31 +847,44 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 		throw std::runtime_error("Error: conebeam_backwards_projection: for _filtered_ backprojection both cosine weights and a filter must be provided");
 	}
 
-	// Some utility variables
+    printf("Validating input .... DONE\n");
+    // Some utility variables
 	//
+    printf("Utility Variables....\n");
 
 	int matrix_size_x = image->get_size(0);
 	int matrix_size_y = image->get_size(1);
 	int matrix_size_z = image->get_size(2);
+    printf("Matrix Size: X = %d , Y=%d, Z = %d\n",matrix_size_x,matrix_size_y,matrix_size_z);
 
 	floatd3 is_dims(matrix_size_x, matrix_size_y, matrix_size_z);
 	int num_image_elements = matrix_size_x*matrix_size_y*matrix_size_z;
+    printf("Num Image Elements: %d \n",num_image_elements);
 
 	int projection_res_x = projections->get_size(0);
 	int projection_res_y = projections->get_size(1);
+    printf("Projection Res: X = %d , Y=%d\n",projection_res_x,projection_res_y);
 
 	floatd2 ps_dims_in_pixels(projection_res_x, projection_res_y);
 
 	int num_projections_in_all_bins = projections->get_size(2);
 	int num_projections_in_bin = indices.size();
+    printf("Num Proj in All Bins: %d \n",num_projections_in_all_bins);
+    printf("Num Proj in Each Bins: %d \n",num_projections_in_bin);
 
 	if( projections_per_batch > num_projections_in_bin )
 		projections_per_batch = num_projections_in_bin;
 
 	int num_batches = (num_projections_in_bin+projections_per_batch-1) / projections_per_batch;
+    printf("Num Batches: %d \n",num_batches);
+
+
+    printf("Utility Variables .... DONE\n");
 
 	// Allocate device memory for the backprojection result
 	//
+    printf("Allocating Device Memory....\n");
+
 
 	boost::shared_ptr< cuNDArray<float> > image_device;
 
@@ -873,11 +894,14 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 	else{
 		image_device = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(image->get_dimensions().get()));
 	}
+    printf("Allocating Device Memory .... DONE\n");
+
 
 	// Allocate the angles, offsets and projections in device memory
 	//
+    printf("Allocating Angles, Offsets, Projections ....\n");
 
-	float *projections_DevPtr, *projections_DevPtr2;
+    float *projections_DevPtr, *projections_DevPtr2;
 	cudaMalloc( (void**) &projections_DevPtr, projection_res_x*projection_res_y*projections_per_batch*sizeof(float));
 	cudaMalloc( (void**) &projections_DevPtr2, projection_res_x*projection_res_y*projections_per_batch*sizeof(float));
 
@@ -903,9 +927,13 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 	thrust::device_vector<float> angles_devVec(angles_vec);
 	thrust::device_vector<floatd2> offsets_devVec(offsets_vec);
 
+    printf("Allocating Angles, Offsets, Projections .... DONE\n");
+
 	// From/to for the first batch
 	// - to enable working streams...
 	//
+    printf("First Batch From/To .... \n");
+
 
 	int from_projection = 0;
 	int to_projection = projections_per_batch;
@@ -951,10 +979,13 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 			p += num_sequential_projections;
 		}
 	}
+    printf("First Batch From/To .... DONE\n");
+
 
 	//
 	// Iterate over batches
 	//
+    printf("Iterate Batches .... \n");
 
 	for( int batch = 0; batch < num_batches; batch++ ) {
 
@@ -976,20 +1007,25 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 			// - with (u,v) positions given in metric units on a virtual detector at the origin
 			//
 
-			*projections_batch *= *cosine_weights;
+            printf("Apply Cosine Weights .... \n");
+            *projections_batch *= *cosine_weights;
+            printf("Apply Cosine Weights .... DONE\n");
 
 			// Redundancy correct
 			// - for short scan mode
 			//
 
 			if( short_scan ){
-				float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD));
+                printf("Short Scan Redundancy .... \n");
+                float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD));
 				redundancy_correct( projections_batch, raw_angles, delta );
+                printf("Short Scan Redundancy .... DONE\n");
 			}
 
 			// Apply frequency filter
 			// - use zero padding to avoid the cyclic boundary conditions induced by the fft
 			//
+            printf("Apply Freq Filter .... \n");
 
 			std::vector<size_t> batch_dims = *projections_batch->get_dimensions();
 			uint64d3 pad_dims(batch_dims[0]<<1, batch_dims[1], batch_dims[2]);
@@ -999,12 +1035,17 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 			cb_ifft( complex_projections.get(), padded_projections.get() );
 			uint64d3 crop_offsets(batch_dims[0]>>1, 0, 0);
 			crop<float,3>( crop_offsets, padded_projections.get(), projections_batch );
+            printf("Apply Freq Filter .... DONE\n");
 
 			// Apply offset correction
 					// - for half fan mode, sag correction etc.
 					//
 			if (use_offset_correction)
-				offset_correct( projections_batch, raw_offsets, ps_dims_in_mm, SAD, SDD );
+            {
+                printf("Apply Offset Correction .... \n");
+                offset_correct( projections_batch, raw_offsets, ps_dims_in_mm, SAD, SDD );
+                printf("Apply Offset Correction .... DONE\n");
+            }
 
 
 		} else if (use_offset_correction)
@@ -1012,7 +1053,7 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 
 		// Build array for input texture
 		//
-
+        printf("Build Cuda Texture .... \n");
 		cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<float>();
 		cudaExtent extent;
 		extent.width = projection_res_x;
@@ -1035,10 +1076,13 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 
 		cudaBindTextureToArray( projections_tex, projections_array, channelDesc );
 		CHECK_FOR_CUDA_ERROR();
+        printf("Build Cuda Texture .... DONE\n");
+
 
 		// Upload projections for the next batch
 		// - to enable streaming
 		//
+        printf("Upload next batch .... \n");
 
 		if( batch < num_batches-1 ){ // for using multiple streams to hide the cost of the uploads
 
@@ -1089,6 +1133,8 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 				p += num_sequential_projections;
 			}
 		}
+        printf("Upload next batch .... DONE\n");
+
 
 		// Define dimensions of grid/blocks.
 		//
@@ -1099,7 +1145,8 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 		// Invoke kernel
 		//
 
-		cudaFuncSetCacheConfig(conebeam_backwards_projection_kernel<FBP>, cudaFuncCachePreferL1);
+        printf("Invoke Kernel .... \n");
+        cudaFuncSetCacheConfig(conebeam_backwards_projection_kernel<FBP>, cudaFuncCachePreferL1);
 
 		conebeam_backwards_projection_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
 				( image_device->get_data_ptr(), raw_angles, raw_offsets,
@@ -1107,9 +1154,13 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 						projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true );
 
 		CHECK_FOR_CUDA_ERROR();
+        printf("Invoke Kernel .... DONE\n");
+
 
 		// Cleanup
 		//
+        printf("Cleanup .... \n");
+
 
 		cudaUnbindTexture(projections_tex);
 		cudaFreeArray(projections_array);
@@ -1121,6 +1172,8 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 		delete projections_batch;
 		if( batch < num_batches-1 )
 			projections_batch = new cuNDArray<float>(&dims_next, projections_DevPtr);
+        printf("Cleanup .... DONE\n");
+
 	}
 
 	// Copy result from device to host
