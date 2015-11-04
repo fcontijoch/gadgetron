@@ -124,6 +124,7 @@ void hoCuConebeamProjectionOperator
 #endif
     for(  int y=0; y<ps_dims_in_pixels[1]; y++ ) {
         for( int x=0; x<ps_dims_in_pixels[0]; x++ ) {
+            double value;
 
             if ( use_cyl_det )
             {
@@ -135,7 +136,7 @@ void hoCuConebeamProjectionOperator
                 float  sin_psi = std::sin(psi_psi);
                 float  weight = 0.5*psi_psi*psi_psi/(sin_psi * sin_psi);
 
-                double value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
+                value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
             }
             else
             {
@@ -148,7 +149,7 @@ void hoCuConebeamProjectionOperator
                 // Equation 10.1, page 386 in Computed Tomography 2nd edition, Jiang Hsieh
                 //
 
-                double value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
+                value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
             }
             data[x+y*ps_dims_in_pixels[0]] = float(value);
 		}
