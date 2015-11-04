@@ -24,6 +24,7 @@ public:
 	CBCT_geometry() {
 		SAD_ = 0.0f;
 		SDD_ = 0.0f;
+		Det_Type_ = 0.0f;
 		FOV_ = floatd2(0.0f);
 	}
 
@@ -34,6 +35,9 @@ public:
 
 	inline void set_SDD( float SDD ) { SDD_ = SDD; }
 	inline float get_SDD() { return SDD_; }
+
+	inline void set_DetType( float Det_Type ) { Det_Type_ = Det_Type; }
+	inline float get_DetType() { return Det_Type_; }
 
 	inline void set_FOV( floatd2 v ) { FOV_ = v; }
 	inline floatd2 get_FOV() { return FOV_; }
@@ -110,6 +114,7 @@ protected:
 
 	float SAD_;
 	float SDD_;
+	float Det_Type_;
 	floatd2 FOV_;
 	std::vector<float> angles_;
 	std::vector<floatd2> offsets_;
@@ -267,6 +272,21 @@ public:
 		geometry_->set_SAD(SAD);
 		geometry_->set_SDD(SDD);
 		geometry_->set_FOV(FOV);
+
+		// FC add getting detector type (flat or cylindrical)
+		float Det_Type;
+		
+		errCode=H5LTread_dataset (file_id, "/Det_Type", H5T_NATIVE_FLOAT, &Det_Type);
+		if (errCode < 0) 	
+		{
+			// Print statement saying we didn't read a value so set it to 0
+			Det_Type = 0.0;
+			printf("No Det_Type read from .h5 file! Setting value to 0.0");
+		}
+		printf("Det_Type: %f \n",Det_Type);
+
+		geometry_->set_DetType(Det_Type);
+
 		H5Fclose (file_id);
 	}
 

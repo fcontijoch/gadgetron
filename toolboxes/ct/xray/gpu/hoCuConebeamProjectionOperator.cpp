@@ -99,6 +99,48 @@ void hoCuConebeamProjectionOperator
 }
 
 void hoCuConebeamProjectionOperator
+::compute_cosine_weights( bool use_cyl_det )
+{
+	std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Detector Type Boolean: " << use_cyl_det << std::endl;
+  	
+	if( !preprocessed_ )
+		throw std::runtime_error("Error: hoCuConebeamProjectionOperator::compute_cosine_weights() : setup not performed");
+
+	uintd2 ps_dims_in_pixels( acquisition_->get_projections()->get_size(0), acquisition_->get_projections()->get_size(1) );
+	floatd2 ps_dims_in_mm = acquisition_->get_geometry()->get_FOV();
+
+	double SAD = double(acquisition_->get_geometry()->get_SAD());
+	double SDD = double(acquisition_->get_geometry()->get_SDD());
+
+	std::vector<size_t> dims;
+	dims.push_back(ps_dims_in_pixels[0]);
+	dims.push_back(ps_dims_in_pixels[1]);
+
+	hoCuNDArray<float> weights(&dims);
+	float* data = weights.get_data_ptr();
+
+#ifdef USE_OMP
+#pragma omp parallel for
+#endif
+	for(  int y=0; y<ps_dims_in_pixels[1]; y++ ) {
+		for( int x=0; x<ps_dims_in_pixels[0]; x++ ) {
+
+			double xx = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
+			double yy = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
+			double s = SAD * xx/SDD;
+			double v = SAD * yy/SDD;
+
+			// Equation 10.1, page 386 in Computed Tomography 2nd edition, Jiang Hsieh
+			//
+
+			double value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
+			data[x+y*ps_dims_in_pixels[0]] = float(value);
+		}
+	}
+	cosine_weights_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&weights));
+}
+
+void hoCuConebeamProjectionOperator
 ::mult_M( hoCuNDArray<float> *image, hoCuNDArray<float> *projections, bool accumulate )
 {
 
@@ -231,8 +273,16 @@ void hoCuConebeamProjectionOperator
 
 		if( use_fbp_ ){
 
-			if( !cosine_weights_.get() )
-				compute_cosine_weights();
+			if (use_cyl_det_)
+			{			
+				if( !cosine_weights_.get() )
+					compute_cosine_weights( use_cyl_det_ );
+			}
+			else
+			{
+				if( !cosine_weights_.get() )
+					compute_cosine_weights();
+			}
 
 			if( !frequency_filter_.get() )
 				compute_default_frequency_filter();

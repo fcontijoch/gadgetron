@@ -69,9 +69,9 @@ int main(int argc, char** argv)
 
   if (parms.get_parameter('b')->get_is_set()){
     std::string binningdata_filename = (char*)parms.get_parameter('b')->get_string_value();
-    std::cout << "Using binning data file: " << binningdata_filename << std::endl;
     binning->load(binningdata_filename);
     binning = boost::shared_ptr<CBCT_binning>(new CBCT_binning(binning->get_3d_binning()));
+    binning->print();
   } 
   else 
     binning->set_as_default_3d_bin(acquisition->get_projections()->get_size(2));
@@ -97,6 +97,9 @@ int main(int argc, char** argv)
 			 parms.get_parameter('f')->get_float_value(2) );
   
   bool use_fbp = parms.get_parameter('F')->get_int_value();
+  bool use_cyl_det =bool( acquisition->get_geometry()->get_DetType());
+  std::cout << "FDK_3d.cpp Detector Type Boolean: " << use_cyl_det << std::endl;
+    
 
   // Allocate array to hold the result
   //
@@ -117,6 +120,7 @@ int main(int argc, char** argv)
 
   E->setup( acquisition, binning, is_dims_in_mm );
   E->set_use_filtered_backprojection(use_fbp);
+  E->set_use_cylindrical_detector(use_cyl_det);
 
   CommandLineParameter *parm = parms.get_parameter('P');
   if( parm && parm->get_is_set() )

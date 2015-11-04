@@ -87,6 +87,10 @@ namespace Gadgetron{
     inline void set_use_filtered_backprojection( bool use_fbp ){
       use_fbp_ = use_fbp;      
     }
+    
+    inline void set_use_cylindrical_detector( bool use_cyl_det ){
+      use_cyl_det_ = use_cyl_det;      
+    }
 
     inline void set_use_offset_correction( bool use_correction ){
       use_offset_correction_ = use_correction;
@@ -129,6 +133,7 @@ namespace Gadgetron{
   protected:
     virtual void compute_default_frequency_filter();
     virtual void compute_cosine_weights();
+    virtual void compute_cosine_weights( bool use_cyl_det_ );
 
   protected:
     boost::shared_ptr<CBCT_acquisition> acquisition_;
@@ -136,6 +141,7 @@ namespace Gadgetron{
     floatd3 is_dims_in_mm_;
     float samples_per_pixel_;
     bool use_fbp_;
+    bool use_cyl_det_;
     unsigned int projections_per_batch_;
     bool preprocessed_;
     bool short_scan_;
