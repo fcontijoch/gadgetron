@@ -792,6 +792,179 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 	}
 }
 
+
+template <bool FBP> __global__ void
+conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
+        const float * __restrict__ angles,
+        floatd2 *offsets,
+        intd3 is_dims_in_pixels_int,
+        floatd3 is_dims_in_mm,
+        floatd2 ps_dims_in_pixels,
+        floatd2 ps_dims_in_mm,
+        int num_projections_in_batch,
+        float num_projections_in_bin,
+        float SDD,
+        float SAD,
+        bool accumulate,
+        bool use_cyl_det_ )
+{
+    std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
+    // Image voxel to backproject into (pixel coordinate and index)
+    //
+
+    const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
+    const int num_elements = prod(is_dims_in_pixels_int);
+
+    if( idx < num_elements ){
+
+        const intd3 co = idx_to_co<3>(idx, is_dims_in_pixels_int);
+
+#ifdef IS_ORIGIN_CENTERING
+        const floatd3 is_pc = floatd3(co[0], co[1], co[2]) + floatd3(0.5);
+#else
+        const floatd3 is_pc = floatd3(co[0], co[1], co[2]);
+#endif
+
+        // Normalized image space coordinate [-0.5, 0.5[
+        //
+
+        const floatd3 is_dims_in_pixels(is_dims_in_pixels_int[0],is_dims_in_pixels_int[1],is_dims_in_pixels_int[2]);
+
+#ifdef FLIP_Z_AXIS
+        floatd3 is_nc = is_pc / is_dims_in_pixels - floatd3(0.5f);
+        is_nc[2] *= -1.0f;
+#else
+        const floatd3 is_nc = is_pc / is_dims_in_pixels - floatd3(0.5f);
+#endif
+
+        // Image space coordinate in metric units
+        //
+
+        const floatd3 pos = is_nc * is_dims_in_mm;
+
+        // Read the existing output value for accumulation at this point.
+        // The cost of this fetch is hidden by the loop
+
+        const float incoming = (accumulate) ? image[idx] : 0.0f;
+
+        // Backprojection loop
+        //
+
+        float result = 0.0f;
+
+        for( int projection = 0; projection < num_projections_in_batch; projection++ ) {
+
+            // Projection angle
+            //
+
+            const float angle = degrees2radians(angles[projection]);
+
+            // Projection rotation matrix
+            //
+
+            const float3x3 inverseRotation = calcRotationMatrixAroundZ(-angle);
+
+            // Rotated image coordinate (local to the projection's coordinate system)
+            //
+
+            const floatd3 pos_proj = mul(inverseRotation, pos);
+
+            // Project the image position onto the projection plate.
+            // Account for half-fan and sag offsets.
+            //
+
+            const floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
+            floatd3 dir = pos_proj - startPoint;
+            dir = dir / dir[1];
+            const floatd3 endPoint = startPoint + dir * SDD;
+
+            const floatd2 endPoint2d;
+            if( use_cyl_det_ )
+            {
+                const float psi = atan2f(endPoint2d[0],SDD);
+                const float epsi = endPoint2d[2] * std::cos(psi);
+                endPoint2d = floatd2(psi, epsi) - offsets[projection];
+            }
+            else
+            {
+                endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
+            }
+
+
+            // Convert metric projection coordinates into pixel coordinates
+            //
+
+#ifndef PS_ORIGIN_CENTERING
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
+            //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f)) * ps_dims_in_pixels + floatd2(0.5f);
+#else
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
+#endif
+
+            // Apply filter (filtered backprojection mode only)
+            //
+
+            float weight = 1.0;
+
+            if( FBP ){
+
+                // Equation 3.59, page 96 and equation 10.2, page 386
+                // in Computed Tomography 2nd edition, Jiang Hsieh
+                //
+
+                if( use_cyl_det_ )
+                {
+                    const float xx = pos[0];
+                    const float yy = pos[1];
+                    const float zz = pos[2];
+
+                    // Find distance from xx,yy to source
+                    const float beta = angle;
+                    const float r = hypotf(xx,yy);
+                    const float phi = atan2f(yy,xx);
+                    const float D = SAD;
+
+                    // Ym is the y distance of the pixel from the source
+                    const float ym = r*sinf(beta-phi);
+                    const float xm = r*cosf(beta-phi);
+
+                    // Lets find the distance in the x-y plane
+                    const float L1 = std::sqrt( (D+ym).^2+xm.^2 );
+
+                    // Now find the 3D distance
+                    // This assumes Z is 0 for x-y plane at center of detector
+                    const float L = std::sqrt( L1.^2+zz.^2 );
+
+                    weight = 1.0f/(L*L);
+                }
+                else
+                {
+                    const float xx = pos[0];
+                    const float yy = pos[1];
+                    const float beta = angle;
+                    const float r = hypotf(xx,yy);
+                    const float phi = atan2f(yy,xx);
+                    const float D = SAD;
+                    const float ym = r*sinf(beta-phi);
+                    const float U = (D+ym)/D;
+                    weight = 1.0f/(U*U);
+                }
+            }
+
+            // Read the projection data (bilinear interpolation enabled) and accumulate
+            //
+
+            result +=  weight * tex2DLayered( projections_tex, ps_pc[0], ps_pc[1], projection );
+        }
+
+        // Output normalized image
+        //
+
+        image[idx] = incoming + result / num_projections_in_bin;
+    }
+}
+
+
 //
 // Backprojection
 //
@@ -1191,6 +1364,408 @@ void conebeam_backwards_projection( hoCuNDArray<float> *projections,
 	CHECK_FOR_CUDA_ERROR();
 }
 
+//
+// Cylindrical Detector Backprojection
+//
+
+template <bool FBP>
+void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
+        hoCuNDArray<float> *image,
+        std::vector<float> angles,
+        std::vector<floatd2> offsets,
+        std::vector<unsigned int> indices,
+        int projections_per_batch,
+        intd3 is_dims_in_pixels,
+        floatd3 is_dims_in_mm,
+        floatd2 ps_dims_in_mm,
+        float SDD,
+        float SAD,
+        bool short_scan,
+        bool use_offset_correction,
+        bool accumulate,
+        cuNDArray<float> *cosine_weights,
+        cuNDArray<float> *frequency_filter,
+        bool use_cyl_det_
+)
+{
+    std::cout << "conbeam_projection.cu - BackProject_Cyl Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
+
+    printf("Input Parameters....\n");
+    printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
+    printf("Is_Dims_In_MM: X = %f , Y=%f, Z = %f\n",is_dims_in_mm[0],is_dims_in_mm[1],is_dims_in_mm[2]);
+    printf("Ps_Dims_In_MM: X = %f , Y=%f\n",ps_dims_in_mm[0],ps_dims_in_mm[1]);
+    printf("SDD: %f \n",SDD);
+    printf("SAD: %f \n",SAD);
+
+    //
+    // Validate the input
+    //
+    printf("Validating input....\n");
+
+    if( projections == 0x0 || image == 0x0 ){
+        throw std::runtime_error("Error: conebeam_backwards_projection: illegal array pointer provided");
+    }
+
+    if( projections->get_number_of_dimensions() != 3 ){
+        throw std::runtime_error("Error: conebeam_backwards_projection: projections array must be three-dimensional");
+    }
+
+    if( image->get_number_of_dimensions() != 3 ){
+        throw std::runtime_error("Error: conebeam_backwards_projection: image array must be three-dimensional");
+    }
+
+    if( projections->get_size(2) != angles.size() || projections->get_size(2) != offsets.size() ) {
+        throw std::runtime_error("Error: conebeam_backwards_projection: inconsistent sizes of input arrays/vectors");
+    }
+
+    if( FBP && !(cosine_weights && frequency_filter) ){
+        throw std::runtime_error("Error: conebeam_backwards_projection: for _filtered_ backprojection both cosine weights and a filter must be provided");
+    }
+
+    printf("Validating input .... DONE\n");
+    // Some utility variables
+    //
+    printf("Utility Variables....\n");
+
+    int matrix_size_x = image->get_size(0);
+    int matrix_size_y = image->get_size(1);
+    int matrix_size_z = image->get_size(2);
+    printf("Matrix Size: X = %d , Y=%d, Z = %d\n",matrix_size_x,matrix_size_y,matrix_size_z);
+
+    floatd3 is_dims(matrix_size_x, matrix_size_y, matrix_size_z);
+    int num_image_elements = matrix_size_x*matrix_size_y*matrix_size_z;
+    printf("Num Image Elements: %d \n",num_image_elements);
+
+    int projection_res_x = projections->get_size(0);
+    int projection_res_y = projections->get_size(1);
+    printf("Projection Res: X = %d , Y=%d\n",projection_res_x,projection_res_y);
+
+    floatd2 ps_dims_in_pixels(projection_res_x, projection_res_y);
+
+    int num_projections_in_all_bins = projections->get_size(2);
+    int num_projections_in_bin = indices.size();
+    printf("Num Proj in All Bins: %d \n",num_projections_in_all_bins);
+    printf("Num Proj in Each Bins: %d \n",num_projections_in_bin);
+
+    if( projections_per_batch > num_projections_in_bin )
+        projections_per_batch = num_projections_in_bin;
+
+    int num_batches = (num_projections_in_bin+projections_per_batch-1) / projections_per_batch;
+    printf("Num Batches: %d \n",num_batches);
+
+
+    printf("Utility Variables .... DONE\n");
+
+    // Allocate device memory for the backprojection result
+    //
+    printf("Allocating Device Memory....\n");
+
+
+    boost::shared_ptr< cuNDArray<float> > image_device;
+
+    if( accumulate ){
+        image_device = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(image));
+    }
+    else{
+        image_device = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(image->get_dimensions().get()));
+    }
+    printf("Allocating Device Memory .... DONE\n");
+
+
+    // Allocate the angles, offsets and projections in device memory
+    //
+    printf("Allocating Angles, Offsets, Projections ....\n");
+
+    float *projections_DevPtr, *projections_DevPtr2;
+    cudaMalloc( (void**) &projections_DevPtr, projection_res_x*projection_res_y*projections_per_batch*sizeof(float));
+    cudaMalloc( (void**) &projections_DevPtr2, projection_res_x*projection_res_y*projections_per_batch*sizeof(float));
+
+    cudaStream_t mainStream, indyStream;
+    cudaStreamCreate(&mainStream);
+    cudaStreamCreate(&indyStream);
+
+    std::vector<float> angles_vec;
+    std::vector<floatd2> offsets_vec;
+
+    for( int p=0; p<indices.size(); p++ ){
+
+        int from_id = indices[p];
+
+        if( from_id >= num_projections_in_all_bins ) {
+            throw std::runtime_error("Error: conebeam_backwards_projection: illegal index in bin");
+        }
+
+        angles_vec.push_back(angles[from_id]);
+        offsets_vec.push_back(offsets[from_id]);
+    }
+
+    thrust::device_vector<float> angles_devVec(angles_vec);
+    thrust::device_vector<floatd2> offsets_devVec(offsets_vec);
+
+    printf("Allocating Angles, Offsets, Projections .... DONE\n");
+
+    // From/to for the first batch
+    // - to enable working streams...
+    //
+    printf("First Batch From/To .... \n");
+
+
+    int from_projection = 0;
+    int to_projection = projections_per_batch;
+
+    if (to_projection > num_projections_in_bin )
+        to_projection = num_projections_in_bin;
+
+    int projections_in_batch = to_projection-from_projection;
+
+    std::vector<size_t> dims;
+    dims.push_back(projection_res_x);
+    dims.push_back(projection_res_y);
+    dims.push_back(projections_in_batch);
+
+    std::vector<size_t> dims_next;
+
+    cuNDArray<float> *projections_batch = new cuNDArray<float>(&dims, projections_DevPtr);
+
+    // Upload first projections batch adhering to the binning.
+    // Be sure to copy sequentially numbered projections in one copy operation.
+    //
+
+    {
+        int p = from_projection;
+
+        while( p<to_projection ) {
+
+            int num_sequential_projections = 1;
+            while( p+num_sequential_projections < to_projection &&
+                    indices[p+num_sequential_projections]==(indices[p+num_sequential_projections-1]+1) ){
+                num_sequential_projections++;
+            }
+
+            int from_id = indices[p];
+            int size = projection_res_x*projection_res_y;
+
+            cudaMemcpyAsync( projections_batch->get_data_ptr()+(p-from_projection)*size,
+                    projections->get_data_ptr()+from_id*size,
+                    size*num_sequential_projections*sizeof(float), cudaMemcpyHostToDevice, mainStream );
+
+            CHECK_FOR_CUDA_ERROR();
+
+            p += num_sequential_projections;
+        }
+    }
+    printf("First Batch From/To .... DONE\n");
+
+
+    //
+    // Iterate over batches
+    //
+    printf("Iterate Batches .... \n");
+
+    for( int batch = 0; batch < num_batches; batch++ ) {
+
+        from_projection = batch * projections_per_batch;
+        to_projection = (batch+1) * projections_per_batch;
+
+        if (to_projection > num_projections_in_bin )
+            to_projection = num_projections_in_bin;
+
+        projections_in_batch = to_projection-from_projection;
+
+        float* raw_angles = thrust::raw_pointer_cast(&angles_devVec[from_projection]);
+        floatd2* raw_offsets = thrust::raw_pointer_cast(&offsets_devVec[from_projection]);
+
+
+        if( FBP ){
+
+            // Apply cosine weighting : "SDD / sqrt(SDD*SDD + u*u + v*v)"
+            // - with (u,v) positions given in metric units on a virtual detector at the origin
+            //
+
+            printf("Apply Cosine Weights .... \n");
+            *projections_batch *= *cosine_weights;
+            printf("Apply Cosine Weights .... DONE\n");
+
+            // Redundancy correct
+            // - for short scan mode
+            //
+
+            if( short_scan ){
+                printf("Short Scan Redundancy .... \n");
+                float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD));
+                redundancy_correct( projections_batch, raw_angles, delta );
+                printf("Short Scan Redundancy .... DONE\n");
+            }
+
+            // Apply frequency filter
+            // - use zero padding to avoid the cyclic boundary conditions induced by the fft
+            //
+            printf("Apply Freq Filter .... \n");
+
+            std::vector<size_t> batch_dims = *projections_batch->get_dimensions();
+            uint64d3 pad_dims(batch_dims[0]<<1, batch_dims[1], batch_dims[2]);
+            boost::shared_ptr< cuNDArray<float> > padded_projections = pad<float,3>( pad_dims, projections_batch );
+            boost::shared_ptr< cuNDArray<complext<float> > > complex_projections = cb_fft( padded_projections.get() );
+            *complex_projections *= *frequency_filter;
+            cb_ifft( complex_projections.get(), padded_projections.get() );
+            uint64d3 crop_offsets(batch_dims[0]>>1, 0, 0);
+            crop<float,3>( crop_offsets, padded_projections.get(), projections_batch );
+            printf("Apply Freq Filter .... DONE\n");
+
+            // Apply offset correction
+                    // - for half fan mode, sag correction etc.
+                    //
+            if (use_offset_correction)
+            {
+                printf("Apply Offset Correction .... \n");
+                offset_correct( projections_batch, raw_offsets, ps_dims_in_mm, SAD, SDD );
+                printf("Apply Offset Correction .... DONE\n");
+            }
+
+
+        } else if (use_offset_correction)
+            offset_correct_sqrt( projections_batch, raw_offsets, ps_dims_in_mm, SAD, SDD );
+
+        // Build array for input texture
+        //
+        printf("Build Cuda Texture .... \n");
+        cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<float>();
+        cudaExtent extent;
+        extent.width = projection_res_x;
+        extent.height = projection_res_y;
+        extent.depth = projections_in_batch;
+
+        cudaArray *projections_array;
+        cudaMalloc3DArray( &projections_array, &channelDesc, extent, cudaArrayLayered );
+        CHECK_FOR_CUDA_ERROR();
+
+        cudaMemcpy3DParms cpy_params = {0};
+        cpy_params.extent = extent;
+        cpy_params.dstArray = projections_array;
+        cpy_params.kind = cudaMemcpyDeviceToDevice;
+        cpy_params.srcPtr =
+                make_cudaPitchedPtr( (void*)projections_batch->get_data_ptr(), projection_res_x*sizeof(float),
+                        projection_res_x, projection_res_y );
+        cudaMemcpy3DAsync( &cpy_params, mainStream );
+        CHECK_FOR_CUDA_ERROR();
+
+        cudaBindTextureToArray( projections_tex, projections_array, channelDesc );
+        CHECK_FOR_CUDA_ERROR();
+        printf("Build Cuda Texture .... DONE\n");
+
+
+        // Upload projections for the next batch
+        // - to enable streaming
+        //
+        printf("Upload next batch .... \n");
+
+        if( batch < num_batches-1 ){ // for using multiple streams to hide the cost of the uploads
+
+            int from_projection_next = (batch+1) * projections_per_batch;
+            int to_projection_next = (batch+2) * projections_per_batch;
+
+            if (to_projection_next > num_projections_in_bin )
+                to_projection_next = num_projections_in_bin;
+
+            int projections_in_batch_next = to_projection_next-from_projection_next;
+
+            // printf("batch: %03i, handling projections: %03i - %03i, angles: %.2f - %.2f\n",
+            //	 batch+1, from_projection_next, to_projection_next-1, angles[from_projection_next], angles[to_projection_next-1]);
+
+            // Allocate device memory for projections and upload
+            //
+
+            dims_next.clear();
+            dims_next.push_back(projection_res_x);
+            dims_next.push_back(projection_res_y);
+            dims_next.push_back(projections_in_batch_next);
+
+            cuNDArray<float> projections_batch_next(&dims, projections_DevPtr2);
+
+            // Upload projections adhering to the binning.
+            // Be sure to copy sequentially numbered projections in one copy operation.
+            //
+
+            int p = from_projection_next;
+
+            while( p<to_projection_next ) {
+
+                int num_sequential_projections = 1;
+                while( p+num_sequential_projections < to_projection_next &&
+                        indices[p+num_sequential_projections]==(indices[p+num_sequential_projections-1]+1) ){
+                    num_sequential_projections++;
+                }
+
+                int from_id = indices[p];
+                int size = projection_res_x*projection_res_y;
+
+                cudaMemcpyAsync( projections_batch_next.get_data_ptr()+(p-from_projection_next)*size,
+                        projections->get_data_ptr()+from_id*size,
+                        size*num_sequential_projections*sizeof(float), cudaMemcpyHostToDevice, indyStream );
+
+                CHECK_FOR_CUDA_ERROR();
+
+                p += num_sequential_projections;
+            }
+        }
+        printf("Upload next batch .... DONE\n");
+
+
+        // Define dimensions of grid/blocks.
+        //
+
+        dim3 dimBlock, dimGrid;
+        setup_grid( matrix_size_x*matrix_size_y*matrix_size_z, &dimBlock, &dimGrid );
+
+        // Invoke kernel
+        //
+
+        printf("Invoke Kernel .... \n");
+        cudaFuncSetCacheConfig(conebeam_backwards_projection_kernel<FBP>, cudaFuncCachePreferL1);
+
+        conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
+                ( image_device->get_data_ptr(), raw_angles, raw_offsets,
+                        is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
+                        projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true , use_cyl_det_);
+
+        CHECK_FOR_CUDA_ERROR();
+        printf("Invoke Kernel .... DONE\n");
+
+
+        // Cleanup
+        //
+        printf("Cleanup .... \n");
+
+
+        cudaUnbindTexture(projections_tex);
+        cudaFreeArray(projections_array);
+        CHECK_FOR_CUDA_ERROR();
+
+        std::swap(projections_DevPtr, projections_DevPtr2);
+        std::swap(mainStream, indyStream);
+
+        delete projections_batch;
+        if( batch < num_batches-1 )
+            projections_batch = new cuNDArray<float>(&dims_next, projections_DevPtr);
+        printf("Cleanup .... DONE\n");
+
+    }
+
+    // Copy result from device to host
+    //
+
+    cudaMemcpy( image->get_data_ptr(), image_device->get_data_ptr(),
+            num_image_elements*sizeof(float), cudaMemcpyDeviceToHost );
+
+    CHECK_FOR_CUDA_ERROR();
+
+    cudaFree(projections_DevPtr2);
+    cudaFree(projections_DevPtr);
+    CUDA_CALL(cudaStreamDestroy(indyStream));
+    CUDA_CALL(cudaStreamDestroy(mainStream));
+    CHECK_FOR_CUDA_ERROR();
+}
+
 // Template instantiations
 //
 
@@ -1201,4 +1776,13 @@ template void conebeam_backwards_projection<false>
 template void conebeam_backwards_projection<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
 		int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>* );
+
+
+template void conebeam_backwards_projection_cyl<false>
+( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, bool);
+
+template void conebeam_backwards_projection_cyl<true>
+( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, bool);
 }

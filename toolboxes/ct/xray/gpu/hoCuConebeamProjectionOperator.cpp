@@ -99,7 +99,7 @@ void hoCuConebeamProjectionOperator
 }
 
 void hoCuConebeamProjectionOperator
-::compute_cosine_weights( bool use_cyl_det )
+::compute_cosine_weights_cyl( bool use_cyl_det )
 {
 	std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Detector Type Boolean: " << use_cyl_det << std::endl;
   	
@@ -128,7 +128,9 @@ void hoCuConebeamProjectionOperator
 
             if ( use_cyl_det )
             {
-                std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Using Cylindrical Weights" << std::endl;
+                // If we want to use cylindrical detector geometry, change weights
+
+                //std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Using Cylindrical Weights" << std::endl;
                 double psi_psi = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
                 double ee = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
 
@@ -293,7 +295,7 @@ void hoCuConebeamProjectionOperator
 			if (use_cyl_det_)
 			{			
 				if( !cosine_weights_.get() )
-					compute_cosine_weights( use_cyl_det_ );
+                    compute_cosine_weights_cyl( use_cyl_det_ );
 			}
 			else
 			{
@@ -312,7 +314,7 @@ void hoCuConebeamProjectionOperator
 					projections_per_batch_,
 					is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
 					SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-					cosine_weights_.get(), frequency_filter_.get() );
+                    cosine_weights_.get(), frequency_filter_.get(), use_cyl_det_);
 		}
 		else
 			conebeam_backwards_projection<false>

@@ -133,7 +133,7 @@ namespace Gadgetron{
   protected:
     virtual void compute_default_frequency_filter();
     virtual void compute_cosine_weights();
-    virtual void compute_cosine_weights( bool use_cyl_det_ );
+    virtual void compute_cosine_weights_cyl( bool use_cyl_det_ );
 
   protected:
     boost::shared_ptr<CBCT_acquisition> acquisition_;
