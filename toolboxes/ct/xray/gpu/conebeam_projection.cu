@@ -841,6 +841,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         // Image space coordinate in metric units
         //
 
+        printf("conbeam_projection.cu - BackProject_Cyl Kernel - Image Space Coordinates \n");
         const floatd3 pos = is_nc * is_dims_in_mm;
 
         // Read the existing output value for accumulation at this point.
@@ -853,10 +854,16 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
         float result = 0.0f;
 
+        printf("conbeam_projection.cu - BackProject_Cyl Kernel - Start Backprojection Loop\n");
+
+
         for( int projection = 0; projection < num_projections_in_batch; projection++ ) {
 
             // Projection angle
             //
+
+            printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
+
 
             const float angle = degrees2radians(angles[projection]);
 
@@ -873,6 +880,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Project the image position onto the projection plate.
             // Account for half-fan and sag offsets.
             //
+
+            printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Start and End Point \n");
+
 
             const floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
             floatd3 dir = pos_proj - startPoint;
