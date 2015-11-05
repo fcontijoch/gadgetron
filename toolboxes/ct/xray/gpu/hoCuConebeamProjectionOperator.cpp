@@ -306,6 +306,8 @@ void hoCuConebeamProjectionOperator
 			if( !frequency_filter_.get() )
 				compute_default_frequency_filter();
 
+            if (use_cyl_det_)
+            {
             conebeam_backwards_projection_cyl<true>
 			( projections, &image_3d,
 					acquisition_->get_geometry()->get_angles(),
@@ -315,6 +317,18 @@ void hoCuConebeamProjectionOperator
 					is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
 					SDD, SAD, short_scan_, use_offset_correction_, accumulate,
                     cosine_weights_.get(), frequency_filter_.get(), use_cyl_det_ );
+            }
+            else
+            {
+                conebeam_backwards_projection<true>
+            ( projections, &image_3d,
+                    acquisition_->get_geometry()->get_angles(),
+                    acquisition_->get_geometry()->get_offsets(),
+                    binning_->get_bin(b),
+                    projections_per_batch_,
+                    is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
+                    SDD, SAD, short_scan_, use_offset_correction_, accumulate );
+            }
 		}
 		else
 			conebeam_backwards_projection<false>
