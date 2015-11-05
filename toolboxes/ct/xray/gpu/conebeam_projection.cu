@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "cuPrintf.cu"
+#include "cuPrintf.cuh"
 
 #define PS_ORIGIN_CENTERING
 #define IS_ORIGIN_CENTERING
