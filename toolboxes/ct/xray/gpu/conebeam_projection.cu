@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "cuPrintf.h"
+#include "cuPrintf.cu"
 
 #define PS_ORIGIN_CENTERING
 #define IS_ORIGIN_CENTERING
