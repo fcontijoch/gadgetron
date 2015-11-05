@@ -292,42 +292,43 @@ void hoCuConebeamProjectionOperator
 
 		if( use_fbp_ ){
 
-			if (use_cyl_det_)
-			{			
-				if( !cosine_weights_.get() )
+            if (use_cyl_det_)
+            {
+                if( !cosine_weights_.get() )
                     compute_cosine_weights_cyl( use_cyl_det_ );
-			}
-			else
-			{
-				if( !cosine_weights_.get() )
-					compute_cosine_weights();
-			}
+            }
+            else
+            {
+                if( !cosine_weights_.get() )
+                    compute_cosine_weights();
+            }
 
-			if( !frequency_filter_.get() )
-				compute_default_frequency_filter();
+            if( !frequency_filter_.get() )
+                compute_default_frequency_filter();
 
             if (use_cyl_det_)
             {
-            conebeam_backwards_projection_cyl<true>
-			( projections, &image_3d,
-					acquisition_->get_geometry()->get_angles(),
-					acquisition_->get_geometry()->get_offsets(),
-					binning_->get_bin(b),
-					projections_per_batch_,
-					is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
-					SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                    cosine_weights_.get(), frequency_filter_.get(), use_cyl_det_ );
+                conebeam_backwards_projection_cyl<true>
+                        ( projections, &image_3d,
+                          acquisition_->get_geometry()->get_angles(),
+                          acquisition_->get_geometry()->get_offsets(),
+                          binning_->get_bin(b),
+                          projections_per_batch_,
+                          is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate,
+                          cosine_weights_.get(), frequency_filter_.get(), use_cyl_det_ );
             }
             else
             {
                 conebeam_backwards_projection<true>
-            ( projections, &image_3d,
-                    acquisition_->get_geometry()->get_angles(),
-                    acquisition_->get_geometry()->get_offsets(),
-                    binning_->get_bin(b),
-                    projections_per_batch_,
-                    is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
-                    SDD, SAD, short_scan_, use_offset_correction_, accumulate );
+                        ( projections, &image_3d,
+                          acquisition_->get_geometry()->get_angles(),
+                          acquisition_->get_geometry()->get_offsets(),
+                          binning_->get_bin(b),
+                          projections_per_batch_,
+                          is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate,
+                          cosine_weights_.get(), frequency_filter_.get());
             }
 		}
 		else
