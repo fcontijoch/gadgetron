@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <vector>
 
+#include "cuPrintf.h"
+
 #define PS_ORIGIN_CENTERING
 #define IS_ORIGIN_CENTERING
 //#define FLIP_Z_AXIS
