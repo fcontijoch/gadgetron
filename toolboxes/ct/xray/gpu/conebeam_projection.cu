@@ -808,7 +808,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         bool accumulate,
         bool use_cyl_det_ )
 {
-    std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
+    //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
+    printf("conbeam_projection.cu - BackProject_Cyl Func. Detector  Boolean: %d",use_cyl_det_);
     // Image voxel to backproject into (pixel coordinate and index)
     //
 
@@ -1388,7 +1389,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         bool use_cyl_det_
 )
 {
-    std::cout << "conbeam_projection.cu - BackProject_Cyl Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
+    printf("conbeam_projection.cu - BackProject_Cyl Func. Detector  Boolean: %d",use_cyl_det_);
 
     printf("Input Parameters....\n");
     printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
