@@ -882,6 +882,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             floatd2 endPoint2d;
             if( use_cyl_det_ )
             {
+                printf("conbeam_projection.cu/BP_Cyl_Kernel If Statement \n");
                 const float psi = atan2f(endPoint2d[0],SDD);
                 const float epsi = endPoint2d[2] * std::cos(psi);
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
@@ -915,6 +916,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
                 if( use_cyl_det_ )
                 {
+                    printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
                     const float xx = pos[0];
                     const float yy = pos[1];
                     const float zz = pos[2];
