@@ -708,7 +708,8 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 		// Image space coordinate in metric units
 		//
 
-		const floatd3 pos = is_nc * is_dims_in_mm;
+        printf("conbeam_projection.cu - BackProject Kernel - Image Space Coordinates \n");
+        const floatd3 pos = is_nc * is_dims_in_mm;
 
 		// Read the existing output value for accumulation at this point.
 		// The cost of this fetch is hidden by the loop
@@ -901,7 +902,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             else
             {
             */
-                endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
+            endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
             //}
 
 
@@ -956,16 +957,16 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 else
                 {
                 */
-                    const float xx = pos[0];
-                    const float yy = pos[1];
-                    const float beta = angle;
-                    const float r = hypotf(xx,yy);
-                    const float phi = atan2f(yy,xx);
-                    const float D = SAD;
-                    const float ym = r*sinf(beta-phi);
-                    const float U = (D+ym)/D;
-                    weight = 1.0f/(U*U);
-               // }
+                const float xx = pos[0];
+                const float yy = pos[1];
+                const float beta = angle;
+                const float r = hypotf(xx,yy);
+                const float phi = atan2f(yy,xx);
+                const float D = SAD;
+                const float ym = r*sinf(beta-phi);
+                const float U = (D+ym)/D;
+                weight = 1.0f/(U*U);
+                // }
             }
 
             // Read the projection data (bilinear interpolation enabled) and accumulate
