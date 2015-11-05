@@ -890,7 +890,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
-            if( use_cyl_det_ )
+            /*
+             * if( use_cyl_det_ )
             {
                 printf("conbeam_projection.cu/BP_Cyl_Kernel If Statement \n");
                 const float psi = atan2f(endPoint2d[0],SDD);
@@ -899,8 +900,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             }
             else
             {
+            */
                 endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
-            }
+            //}
 
 
             // Convert metric projection coordinates into pixel coordinates
@@ -924,6 +926,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 // in Computed Tomography 2nd edition, Jiang Hsieh
                 //
 
+                /*
                 if( use_cyl_det_ )
                 {
                     printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
@@ -952,6 +955,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 }
                 else
                 {
+                */
                     const float xx = pos[0];
                     const float yy = pos[1];
                     const float beta = angle;
@@ -961,7 +965,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     const float ym = r*sinf(beta-phi);
                     const float U = (D+ym)/D;
                     weight = 1.0f/(U*U);
-                }
+               // }
             }
 
             // Read the projection data (bilinear interpolation enabled) and accumulate
