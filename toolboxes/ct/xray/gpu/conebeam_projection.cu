@@ -930,11 +930,11 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     const float xm = r*cosf(beta-phi);
 
                     // Lets find the distance in the x-y plane
-                    const float L1 = std::sqrtf( (float) (D+ym)*(D+ym)+xm*xm );
+                    const float L1 = std::sqrt( (float) (D+ym)*(D+ym)+xm*xm );
 
                     // Now find the 3D distance
                     // This assumes Z is 0 for x-y plane at center of detector
-                    const float L = std::sqrtf( L1*L1+zz*zz );
+                    const float L = std::sqrt( L1*L1+zz*zz );
 
                     weight = 1.0f/(L*L);
                 }
