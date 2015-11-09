@@ -956,6 +956,14 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
 #endif
 
+            if (idx == 0)
+            {
+                printf("Values: \n");
+                printf("ps_pc[0]: %f \n", ps_pc[0]);
+                printf("ps_pc[1]: %f \n", ps_pc[1]);
+            }
+
+
             // Apply filter (filtered backprojection mode only)
             //
 
