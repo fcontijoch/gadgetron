@@ -815,15 +815,19 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         bool accumulate,
         bool use_cyl_det_ )
 {
+    // Image voxel to backproject into (pixel coordinate and index)
+    //
+
+    const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
+
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
     if (idx == 0)
     {
         printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
     }
-    // Image voxel to backproject into (pixel coordinate and index)
-    //
 
-    const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
+
+
     const int num_elements = prod(is_dims_in_pixels_int);
 
     if( idx < num_elements ){
