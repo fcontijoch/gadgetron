@@ -711,7 +711,10 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 		// Image space coordinate in metric units
 		//
 
-        cuPrintf("conbeam_projection.cu - BackProject Kernel - Image Space Coordinates \n");
+        if(idx ==0)
+        {
+            cuPrintf("conbeam_projection.cu - BackProject Kernel - Image Space Coordinates \n");
+        }
         const floatd3 pos = is_nc * is_dims_in_mm;
 
 		// Read the existing output value for accumulation at this point.
