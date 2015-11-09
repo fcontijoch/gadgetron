@@ -713,7 +713,7 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 
         if(idx ==0)
         {
-            cuPrintf("conbeam_projection.cu - BackProject Kernel - Image Space Coordinates \n");
+            printf("conbeam_projection.cu - BackProject Kernel - Image Space Coordinates \n");
         }
         const floatd3 pos = is_nc * is_dims_in_mm;
 
@@ -816,7 +816,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         bool use_cyl_det_ )
 {
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
-    printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
+    if (idx == 0)
+    {
+        printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
+    }
     // Image voxel to backproject into (pixel coordinate and index)
     //
 
@@ -848,7 +851,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         // Image space coordinate in metric units
         //
 
-        printf("conbeam_projection.cu - BackProject_Cyl Kernel - Image Space Coordinates \n");
+        if (idx == 0)
+        {
+            printf("conbeam_projection.cu - BackProject_Cyl Kernel - Image Space Coordinates \n");
+        }
         const floatd3 pos = is_nc * is_dims_in_mm;
 
         // Read the existing output value for accumulation at this point.
@@ -861,7 +867,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
         float result = 0.0f;
 
-        printf("conbeam_projection.cu - BackProject_Cyl Kernel - Start Backprojection Loop\n");
+        if (idx == 0)
+        {
+            printf("conbeam_projection.cu - BackProject_Cyl Kernel - Start Backprojection Loop\n");
+        }
 
 
         for( int projection = 0; projection < num_projections_in_batch; projection++ ) {
@@ -869,7 +878,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Projection angle
             //
 
-            printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
+            if (idx == 0)
+            {
+                printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
+            }
 
 
             const float angle = degrees2radians(angles[projection]);
@@ -888,7 +900,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Account for half-fan and sag offsets.
             //
 
-            printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Start and End Point \n");
+            if (idx == 0)
+            {
+                printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Start and End Point \n");
+            }
 
 
             const floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
