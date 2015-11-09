@@ -916,19 +916,23 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
-            /*
-             * if( use_cyl_det_ )
+            if( use_cyl_det_ )
             {
-                printf("conbeam_projection.cu/BP_Cyl_Kernel If Statement \n");
+                if (idx == 0)
+                {
+                    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
+                }
                 const float psi = atan2f(endPoint2d[0],SDD);
                 const float epsi = endPoint2d[2] * std::cos(psi);
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
             }
             else
             {
-            */
-            endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
-            //}
+                {
+                    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Flat Det \n");
+                }
+                endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
+            }
 
 
             // Convert metric projection coordinates into pixel coordinates
