@@ -926,9 +926,24 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 const float epsi = endPoint2d[2] * std::cos(psi);
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
 
-                if (idx == 0)
+                if (idx == 100)
                 {
                     printf("Values: \n");
+                    printf("Projection: %u \n", projection);
+                    printf("Angle: %f \n", angle);
+                    printf("pos_proj[0]: %f \n", pos_proj[0]);
+                    printf("pos_proj[1]: %f \n", pos_proj[1]);
+                    printf("pos_proj[2]: %f \n", pos_proj[2]);
+                    printf("startPoint[0]: %f \n", startPoint[0]);
+                    printf("startPoint[1]: %f \n", startPoint[1]);
+                    printf("startPoint[2]: %f \n", startPoint[2]);
+                    printf("dir[0]: %f \n", dir[0]);
+                    printf("dir[1]: %f \n", dir[1]);
+                    printf("dir[2]: %f \n", dir[2]);
+                    printf("endPoint[0]: %f \n", endPoint[0]);
+                    printf("endPoint[1]: %f \n", endPoint[1]);
+                    printf("endPoint[2]: %f \n", endPoint[2]);
+
                     printf("endPoint2d[0]: %f \n", endPoint2d[0]);
                     printf("endPoint2d[1]: %f \n", endPoint2d[1]);
                     printf("endPoint2d[2]: %f \n", endPoint2d[2]);
