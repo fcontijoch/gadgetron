@@ -764,6 +764,31 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 			floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
 #endif
 
+
+            if (idx == 100)
+            {
+                printf("Values: \n");
+                printf("Projection: %u \n", projection);
+                printf("Angle: %f \n", angle);
+                printf("pos_proj[0]: %f \n", pos_proj[0]);
+                printf("pos_proj[1]: %f \n", pos_proj[1]);
+                printf("pos_proj[2]: %f \n", pos_proj[2]);
+                printf("startPoint[0]: %f \n", startPoint[0]);
+                printf("startPoint[1]: %f \n", startPoint[1]);
+                printf("startPoint[2]: %f \n", startPoint[2]);
+                printf("dir[0]: %f \n", dir[0]);
+                printf("dir[1]: %f \n", dir[1]);
+                printf("dir[2]: %f \n", dir[2]);
+                printf("endPoint[0]: %f \n", endPoint[0]);
+                printf("endPoint[1]: %f \n", endPoint[1]);
+                printf("endPoint[2]: %f \n", endPoint[2]);
+                printf("offsets[proj]: %f \n", offsets[projection]);
+
+                printf("endPoint2d[0]: %f \n", endPoint2d[0]);
+                printf("endPoint2d[1]: %f \n", endPoint2d[1]);
+                printf("ps_pc[0]: %f \n", ps_pc[0]);
+                printf("ps_pc[1]: %f \n", ps_pc[1]);
+            }
 			// Apply filter (filtered backprojection mode only)
 			//
 
