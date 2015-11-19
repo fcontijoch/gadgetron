@@ -821,7 +821,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
     const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
 
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
-    if (idx == 0)
+    if (idx == 100)
     {
         printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
     }
@@ -855,7 +855,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         // Image space coordinate in metric units
         //
 
-        if (idx == 0)
+        if (idx == 100)
         {
             printf("conbeam_projection.cu - BackProject_Cyl Kernel - Image Space Coordinates \n");
         }
@@ -871,7 +871,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
         float result = 0.0f;
 
-        if (idx == 0)
+        if (idx == 100)
         {
             printf("conbeam_projection.cu - BackProject_Cyl Kernel - Start Backprojection Loop\n");
         }
@@ -882,7 +882,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Projection angle
             //
 
-            if (idx == 0)
+            if (idx == 100)
             {
                 printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
             }
@@ -904,7 +904,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Account for half-fan and sag offsets.
             //
 
-            if (idx == 0)
+            if (idx == 100)
             {
                 printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Start and End Point \n");
             }
@@ -918,7 +918,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             floatd2 endPoint2d;
             if( use_cyl_det_ )
             {
-                if (idx == 0)
+                if (idx == 100)
                 {
                     printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
                 }
@@ -943,10 +943,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     printf("endPoint[0]: %f \n", endPoint[0]);
                     printf("endPoint[1]: %f \n", endPoint[1]);
                     printf("endPoint[2]: %f \n", endPoint[2]);
+                    printf("offsets[proj]: %f \n", offsets[proj]);
 
                     printf("endPoint2d[0]: %f \n", endPoint2d[0]);
                     printf("endPoint2d[1]: %f \n", endPoint2d[1]);
-                    printf("endPoint2d[2]: %f \n", endPoint2d[2]);
                     printf("Psi: %f \n", psi);
                     printf("Epsi: %f \n", epsi);
                 }
@@ -971,7 +971,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
 #endif
 
-            if (idx == 0)
+            if (idx == 100)
             {
                 printf("Values: \n");
                 printf("ps_pc[0]: %f \n", ps_pc[0]);
@@ -990,10 +990,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 // in Computed Tomography 2nd edition, Jiang Hsieh
                 //
 
-                /*
+
                 if( use_cyl_det_ )
                 {
-                    printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
+
                     const float xx = pos[0];
                     const float yy = pos[1];
                     const float zz = pos[2];
@@ -1016,10 +1016,28 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     const float L = std::sqrt( L1*L1+zz*zz );
 
                     weight = 1.0f/(L*L);
+
+                    if (idx == 100)
+                    {
+                        printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
+                        printf("Weighting Values: \n");
+                        printf("XX: %f \n", xx);
+                        printf("YY: %f \n", yy);
+                        printf("ZZ: %f \n", zz);
+                        printf("Beta: %f \n", beta);
+                        printf("r: %f \n", r);
+                        printf("phi: %f \n", phi);
+                        printf("D: %f \n", D);
+                        printf("ym: %f \n", ym);
+                        printf("xm: %f \n", xm);
+                        printf("L1: %f \n", L1);
+                        printf("L: %f \n", L);
+
+                    }
                 }
                 else
                 {
-                */
+
                 const float xx = pos[0];
                 const float yy = pos[1];
                 const float beta = angle;
@@ -1029,7 +1047,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 const float ym = r*sinf(beta-phi);
                 const float U = (D+ym)/D;
                 weight = 1.0f/(U*U);
-                // }
+                }
             }
 
             // Read the projection data (bilinear interpolation enabled) and accumulate
