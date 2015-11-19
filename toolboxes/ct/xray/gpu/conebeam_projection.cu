@@ -1015,7 +1015,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     // This assumes Z is 0 for x-y plane at center of detector
                     const float L = std::sqrt( L1*L1+zz*zz );
 
-                    weight = 1.0f/(L*L);
+                    weight = 1.0f*(D*D)/(L*L);
 
                     if (idx == 100)
                     {
