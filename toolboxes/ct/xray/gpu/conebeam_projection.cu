@@ -1033,6 +1033,20 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                         printf("L1: %f \n", L1);
                         printf("L: %f \n", L);
 
+                        const float xx = pos[0];
+                        const float yy = pos[1];
+                        const float beta = angle;
+                        const float r = hypotf(xx,yy);
+                        const float phi = atan2f(yy,xx);
+                        const float D = SAD;
+                        const float ym = r*sinf(beta-phi);
+                        const float U = (D+ym)/D;
+
+                        printf("U: %f \n", U);
+
+                        printf("weight: %f \n", weight);
+
+
                     }
                 }
                 else
