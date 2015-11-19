@@ -943,7 +943,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     printf("endPoint[0]: %f \n", endPoint[0]);
                     printf("endPoint[1]: %f \n", endPoint[1]);
                     printf("endPoint[2]: %f \n", endPoint[2]);
-                    printf("offsets[proj]: %f \n", offsets[proj]);
+                    printf("offsets[proj]: %f \n", offsets[projection]);
 
                     printf("endPoint2d[0]: %f \n", endPoint2d[0]);
                     printf("endPoint2d[1]: %f \n", endPoint2d[1]);
