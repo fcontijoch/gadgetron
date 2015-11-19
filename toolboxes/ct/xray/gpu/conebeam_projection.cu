@@ -922,8 +922,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 {
                     printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
                 }
-                const float psi = atan2f(endPoint2d[0],SDD);
-                const float epsi = endPoint2d[2] * std::cos(psi);
+                const float psi = atan2f(endPoint[0],SDD);
+                const float epsi = endPoint[2] * std::cos(psi);
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
 
                 if (idx == 100)
