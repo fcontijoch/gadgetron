@@ -765,7 +765,7 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 #endif
 
 
-            if (idx == 100 || ix ==(num_elements-1) )
+            if (idx == 100 || idx == (num_elements-1) )
             {
                 printf("Values: \n");
                 printf("Projection: %u \n", projection);
