@@ -990,7 +990,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             //
             // FC change ps_dims_in_mm to be in angular for dim[0]
             floatd2 ps_dims_in_mm_cyl;
-            ps_dims_in_mm_cyl[0]=ps_dims_in_mm[0]/(2*M_PI*SDD*ps_dims_in_pixels[0]);
+            ps_dims_in_mm_cyl[0]=ps_dims_in_mm[0]/(2*M_PI*SDD);
             ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
 #ifndef PS_ORIGIN_CENTERING
