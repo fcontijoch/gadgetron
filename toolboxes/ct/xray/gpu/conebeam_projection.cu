@@ -988,17 +988,27 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             // Convert metric projection coordinates into pixel coordinates
             //
+            // FC change ps_dims_in_mm to be in angular for dim[0]
+            floatd2 ps_dims_in_mm_cyl;
+            ps_dims_in_mm_cyl[0]=ps_dims_in_mm[0]/(2*M_PI*SDD);
+            ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
 #ifndef PS_ORIGIN_CENTERING
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
             //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f)) * ps_dims_in_pixels + floatd2(0.5f);
 #else
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
 #endif
 
             if (idx == 100)
             {
                 printf("Values: \n");
+                printf("ps_dims_in_mm[0]: %f \n", ps_dims_in_mm[0]);
+                printf("ps_dims_in_mm[1]: %f \n", ps_dims_in_mm[1]);
+
+                printf("ps_dims_in_mm_cyl[0]: %f \n", ps_dims_in_mm_cyl[0]);
+                printf("ps_dims_in_mm_cyl[1]: %f \n", ps_dims_in_mm_cyl[1]);
+
                 printf("ps_pc[0]: %f \n", ps_pc[0]);
                 printf("ps_pc[1]: %f \n", ps_pc[1]);
             }
