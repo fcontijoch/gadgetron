@@ -991,7 +991,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // FC change ps_dims_in_mm to be  angular for dim[0]
             floatd2 ps_dims_in_mm_cyl;
             float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD)); // half-Fan angle in rad
-            ps_dims_in_mm_cyl[0]=2*m_PI*ps_dims_in_mm[0];
+            ps_dims_in_mm_cyl[0]=6.2832*ps_dims_in_mm[0];
             //ps_dims_in_mm_cyl[0]=10.0*ps_dims_in_mm[0];
             ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
