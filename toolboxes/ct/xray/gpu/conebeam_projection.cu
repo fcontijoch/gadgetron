@@ -988,10 +988,11 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             // Convert metric projection coordinates into pixel coordinates
             //
-            // FC change ps_dims_in_mm to be in angular for dim[0]
+            // FC change ps_dims_in_mm to be  angular for dim[0]
             floatd2 ps_dims_in_mm_cyl;
             float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD)); // half-Fan angle in rad
-            ps_dims_in_mm_cyl[0]=2*delta;
+            //ps_dims_in_mm_cyl[0]=2*delta;
+            ps_dims_in_mm_cyl[0]=ps_dims_in_mm[0];
             ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
 #ifndef PS_ORIGIN_CENTERING
