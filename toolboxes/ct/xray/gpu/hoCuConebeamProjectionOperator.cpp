@@ -136,7 +136,7 @@ void hoCuConebeamProjectionOperator
 
                 double e = SAD * ee/SDD;
                 float  sin_psi = std::sin(psi_psi);
-                float  weight = 0.5*psi_psi*psi_psi/(sin_psi * sin_psi);
+                float  weight = psi_psi*psi_psi/(sin_psi * sin_psi);
 
                 value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
             }
@@ -229,7 +229,7 @@ void hoCuConebeamProjectionOperator
 	  this->offset_correct(projections2);
 	if (accumulate){
 	  *projections += *projections2;
-	  delete projections2;
+      delete projections2;
 	}
 
 
