@@ -128,6 +128,10 @@ main(int argc, char** argv)
   std::cout << "IS dimensions " << is_dims[0] << " " << is_dims[1] << " " << is_dims[2] << std::endl;
   std::cout << "Image size " << imageDimensions << std::endl;
 
+  // FC get use_cyl_det from data
+  bool use_cyl_det =bool( acquisition->get_geometry()->get_DetType());
+  std::cout << "Use_cyl_det " << use_cyl_det << std::endl;
+
   is_dims.push_back(binning->get_number_of_bins());
 
   hoCuNDArray<float> projections(*ps->get_projections());
