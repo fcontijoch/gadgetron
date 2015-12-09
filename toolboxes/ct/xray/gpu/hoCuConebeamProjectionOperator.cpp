@@ -354,8 +354,8 @@ void hoCuConebeamProjectionOperator
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
                           cosine_weights_.get(), frequency_filter_.get());
             }
-		}
-		else
+        }
+        else
         {
             if (use_cyl_det_)
             {
@@ -383,5 +383,6 @@ void hoCuConebeamProjectionOperator
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate );
             }
         }
-}
+
+    }
 }
