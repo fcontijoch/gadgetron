@@ -1172,8 +1172,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         float num_projections_in_bin,
         float SDD,
         float SAD,
-        bool accumulate,
-        bool use_cyl_det_ )
+        bool accumulate )
 {
     // Image voxel to backproject into (pixel coordinate and index)
     //
@@ -1276,8 +1275,6 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
-            if( use_cyl_det_ )
-            {
                 if (idx == 31457380)
                 {
                     printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
@@ -1310,15 +1307,6 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     printf("Psi: %f \n", psi);
                     printf("Epsi: %f \n", epsi);
                 }
-
-            }
-            else
-            {
-                {
-                    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Flat Det \n");
-                }
-                endPoint2d = floatd2(endPoint[0], endPoint[2]) - offsets[projection];
-            }
 
 
             // Convert metric projection coordinates into pixel coordinates
@@ -1363,8 +1351,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 //
 
 
-                if( use_cyl_det_ )
-                {
+                //if( use_cyl_det_ )
+                //{
 
                     const float xx = pos[0];
                     const float yy = pos[1];
@@ -1420,8 +1408,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
 
                     }
-                }
-                else
+                //}
+                /*
+                 * else
                 {
 
                 const float xx = pos[0];
@@ -1434,6 +1423,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 const float U = (D+ym)/D;
                 weight = 1.0f/(U*U);
                 }
+                */
             }
 
             // Read the projection data (bilinear interpolation enabled) and accumulate
@@ -1869,8 +1859,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         bool use_offset_correction,
         bool accumulate,
         cuNDArray<float> *cosine_weights,
-        cuNDArray<float> *frequency_filter,
-        bool use_cyl_det_
+        cuNDArray<float> *frequency_filter
 )
 {
     printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
@@ -2211,7 +2200,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
                 ( image_device->get_data_ptr(), raw_angles, raw_offsets,
                         is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-                        projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true , use_cyl_det_);
+                        projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true );
 
         CHECK_FOR_CUDA_ERROR();
         printf("Invoke Kernel .... DONE\n");

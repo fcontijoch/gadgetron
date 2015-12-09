@@ -311,7 +311,8 @@ void hoCuConebeamProjectionOperator
 
 		hoCuNDArray<float> image_3d(&dims_3d, image->get_data_ptr()+b*num_3d_elements);
 
-		if( use_fbp_ ){
+        if( use_fbp_ )
+        {
 
             if (use_cyl_det_)
             {
@@ -339,7 +340,7 @@ void hoCuConebeamProjectionOperator
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                          cosine_weights_.get(), frequency_filter_.get(), use_cyl_det_ );
+                          cosine_weights_.get(), frequency_filter_.get() );
             }
             else
             {
@@ -355,14 +356,32 @@ void hoCuConebeamProjectionOperator
             }
 		}
 		else
-			conebeam_backwards_projection<false>
-		( projections, &image_3d,
-				acquisition_->get_geometry()->get_angles(),
-				acquisition_->get_geometry()->get_offsets(),
-				binning_->get_bin(b),
-				projections_per_batch_,
-				is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
-				SDD, SAD, short_scan_, use_offset_correction_, accumulate );
-	}
+        {
+            if (use_cyl_det_)
+            {
+                std::cout << "hoCuCBProjOper.cpp mult_MH  - Call Conbebeam_backwards_projection_cyl w/o FBP \n" << std::endl;
+
+                conebeam_backwards_projection_cyl<true>
+                        ( projections, &image_3d,
+                          acquisition_->get_geometry()->get_angles(),
+                          acquisition_->get_geometry()->get_offsets(),
+                          binning_->get_bin(b),
+                          projections_per_batch_,
+                          is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate);
+            }
+            else
+            {
+
+                conebeam_backwards_projection<false>
+                        ( projections, &image_3d,
+                          acquisition_->get_geometry()->get_angles(),
+                          acquisition_->get_geometry()->get_offsets(),
+                          binning_->get_bin(b),
+                          projections_per_batch_,
+                          is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate );
+            }
+        }
 }
 }

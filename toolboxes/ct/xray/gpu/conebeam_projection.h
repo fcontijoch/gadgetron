@@ -105,6 +105,5 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
         bool accumulate,
         cuNDArray<float> *cosine_weights = 0x0,
         cuNDArray<float> *frequency_filter = 0x0,
-        bool use_cyl_det_ = 0
   );
 }
