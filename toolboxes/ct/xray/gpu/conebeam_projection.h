@@ -50,6 +50,20 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
 				float SDD, 
 				float SAD
   );
+
+  EXPORTGPUXRAY void conebeam_forwards_projection_cyl
+    ( hoCuNDArray<float> *projections,
+                hoCuNDArray<float> *image,
+                std::vector<float> angles,
+                std::vector<floatd2> offsets,
+                std::vector<unsigned int> indices,
+                int projections_per_batch,
+                float samples_per_pixel,
+                floatd3 is_dims_in_mm,
+                floatd2 ps_dims_in_mm,
+                float SDD,
+                float SAD
+  );
   
   // Backprojection of a set of projections onto a 3D volume.
   // - depending on the provided binnning indices, just a subset of the projections can be included

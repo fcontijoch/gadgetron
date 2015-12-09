@@ -215,14 +215,28 @@ void hoCuConebeamProjectionOperator
 
 		//Make a 3d view into the 4d image
 		hoCuNDArray<float> image_3d(&dims_3d, image->get_data_ptr()+b*num_3d_elements);
+        if (use_cyl_det_)
+        {
 
-		conebeam_forwards_projection( projections2, &image_3d,
-				acquisition_->get_geometry()->get_angles(),
-				acquisition_->get_geometry()->get_offsets(),
-				binning_->get_bin(b),
-				projections_per_batch_, samples_per_pixel_,
-				is_dims_in_mm_, ps_dims_in_mm,
-					      SDD, SAD);
+            conebeam_forwards_projection_cyl( projections2, &image_3d,
+                    acquisition_->get_geometry()->get_angles(),
+                    acquisition_->get_geometry()->get_offsets(),
+                    binning_->get_bin(b),
+                    projections_per_batch_, samples_per_pixel_,
+                    is_dims_in_mm_, ps_dims_in_mm,
+                              SDD, SAD);
+        }
+        else
+        {
+            conebeam_forwards_projection( projections2, &image_3d,
+                    acquisition_->get_geometry()->get_angles(),
+                    acquisition_->get_geometry()->get_offsets(),
+                    binning_->get_bin(b),
+                    projections_per_batch_, samples_per_pixel_,
+                    is_dims_in_mm_, ps_dims_in_mm,
+                              SDD, SAD);
+        }
+
 	}
 
 	if (use_offset_correction_ && !use_fbp_)
