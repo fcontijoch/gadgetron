@@ -143,6 +143,7 @@ main(int argc, char** argv)
   E->setup(ps,binning,imageDimensions);
   E->set_domain_dimensions(&is_dims);
   E->set_codomain_dimensions(ps->get_projections()->get_dimensions().get());
+  E->set_use_cylindrical_detector(use_cyl_det);
 
   if (E->get_use_offset_correction())
     	E->offset_correct(&projections);
