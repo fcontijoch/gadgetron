@@ -762,12 +762,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
             printf("dir[0]: %f \n", dir[0]);
             printf("dir[1]: %f \n", dir[1]);
             printf("dir[2]: %f \n", dir[2]);
-            printf("offsets[proj]: %f \n", offsets[projection]);
 
-            printf("endPoint2d[0]: %f \n", endPoint2d[0]);
-            printf("endPoint2d[1]: %f \n", endPoint2d[1]);
-            printf("Psi: %f \n", psi);
-            printf("Epsi: %f \n", epsi);
         }
 
 
