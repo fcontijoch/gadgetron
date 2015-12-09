@@ -197,6 +197,9 @@ void hoCuConebeamProjectionOperator
 	// Iterate over the temporal dimension.
 	// I.e. reconstruct one 3D volume at a time.
 	//
+    printf("hoCuCBProjOper.cpp mult_M \n");
+    printf("use_cyl_det_: %u \n", use_cyl_det_);
+
 
 	for( int b=0; b<binning_->get_number_of_bins(); b++ ) {
 
@@ -284,6 +287,10 @@ void hoCuConebeamProjectionOperator
 	// Iterate over the temporal dimension.
 	// I.e. reconstruct one 3D volume at a time.
 	//
+    //std::cout << "hoCuCBProjOper.cpp mult_MH \n" << std::endl;
+    printf("hoCuCBProjOper.cpp mult_MH \n");
+    printf("use_cyl_det_: %u \n", use_cyl_det_);
+
 
 	for( int b=0; b<binning_->get_number_of_bins(); b++ ) {
 
