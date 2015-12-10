@@ -218,7 +218,7 @@ int main(int argc, char** argv)
 		solver.add_regularization_group_operator(dx);
 		solver.add_regularization_group_operator(dy);
 		solver.add_regularization_group_operator(dz);
-        //solver.add_regularization_group_operator(dt);
+        solver.add_regularization_group_operator(dt);
 		solver.add_group(1);
 	}
 
