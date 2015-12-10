@@ -166,6 +166,10 @@ int main(int argc, char** argv)
 	std::cout << "IS dimensions " << is_dims[0] << " " << is_dims[1] << " " << is_dims[2] << std::endl;
 	std::cout << "Image size " << imageDimensions << std::endl;
 
+    // FC get use_cyl_det from data
+    bool use_cyl_det =bool( ps->get_geometry()->get_DetType());
+    std::cout << "Use_cyl_det " << use_cyl_det << std::endl;
+
 	is_dims.push_back(binning->get_number_of_bins());
 
 	hoCuNDArray<float> projections(*ps->get_projections());
@@ -177,6 +181,7 @@ int main(int argc, char** argv)
 	E->setup(ps,binning,imageDimensions);
 	E->set_domain_dimensions(&is_dims);
 	E->set_codomain_dimensions(ps->get_projections()->get_dimensions().get());
+    E->set_use_cylindrical_detector(use_cyl_det);
 
 	mySbcCgSolver solver;
 
