@@ -1877,23 +1877,23 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
     printf("Validating input....\n");
 
     if( projections == 0x0 || image == 0x0 ){
-        throw std::runtime_error("Error: conebeam_backwards_projection: illegal array pointer provided");
+        throw std::runtime_error("Error: conebeam_backwards_projection_cyl: illegal array pointer provided");
     }
 
     if( projections->get_number_of_dimensions() != 3 ){
-        throw std::runtime_error("Error: conebeam_backwards_projection: projections array must be three-dimensional");
+        throw std::runtime_error("Error: conebeam_backwards_projection_cyl: projections array must be three-dimensional");
     }
 
     if( image->get_number_of_dimensions() != 3 ){
-        throw std::runtime_error("Error: conebeam_backwards_projection: image array must be three-dimensional");
+        throw std::runtime_error("Error: conebeam_backwards_projection_cyl: image array must be three-dimensional");
     }
 
     if( projections->get_size(2) != angles.size() || projections->get_size(2) != offsets.size() ) {
-        throw std::runtime_error("Error: conebeam_backwards_projection: inconsistent sizes of input arrays/vectors");
+        throw std::runtime_error("Error: conebeam_backwards_projection_cyl: inconsistent sizes of input arrays/vectors");
     }
 
     if( FBP && !(cosine_weights && frequency_filter) ){
-        throw std::runtime_error("Error: conebeam_backwards_projection: for _filtered_ backprojection both cosine weights and a filter must be provided");
+        throw std::runtime_error("Error: conebeam_backwards_projection_cyl: for _filtered_ backprojection both cosine weights and a filter must be provided");
     }
 
     printf("Validating input .... DONE\n");

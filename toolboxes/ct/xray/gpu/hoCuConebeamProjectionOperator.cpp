@@ -361,7 +361,7 @@ void hoCuConebeamProjectionOperator
             {
                 std::cout << "hoCuCBProjOper.cpp mult_MH  - Call Conbebeam_backwards_projection_cyl w/o FBP \n" << std::endl;
 
-                conebeam_backwards_projection_cyl<true>
+                conebeam_backwards_projection_cyl<false>
                         ( projections, &image_3d,
                           acquisition_->get_geometry()->get_angles(),
                           acquisition_->get_geometry()->get_offsets(),
