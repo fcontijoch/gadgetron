@@ -740,7 +740,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         floatd3 dir = endPoint-startPoint;
 
         // Report out values
-        if (idx == 31457380)
+        /*if (idx == 31457380)
         {
             printf("conbeam_projection.cu - ForwProject_Cyl Kernel \n");
             printf("Values: \n");
@@ -764,6 +764,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
             printf("dir[2]: %f \n", dir[2]);
 
         }
+        */
 
 
         // Perform integration only inside the bounding cylinder of the image volume
@@ -1099,6 +1100,7 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
 			floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f));
 #endif
 
+            /*
 
             if (idx == 100 || idx == (num_elements-1) )
             {
@@ -1124,6 +1126,7 @@ conebeam_backwards_projection_kernel( float * __restrict__ image,
                 printf("ps_pc[0]: %f \n", ps_pc[0]);
                 printf("ps_pc[1]: %f \n", ps_pc[1]);
             }
+            */
 			// Apply filter (filtered backprojection mode only)
 			//
 
@@ -1283,6 +1286,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 const float epsi = endPoint[2] * std::cos(psi);
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
 
+                /*
                 if (idx == 31457380)
                 {
                     printf("Values: \n");
@@ -1307,6 +1311,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     printf("Psi: %f \n", psi);
                     printf("Epsi: %f \n", epsi);
                 }
+                */
 
 
             // Convert metric projection coordinates into pixel coordinates
@@ -1325,6 +1330,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
 #endif
 
+            /*
             if (idx == 31457380)
             {
                 printf("Values: \n");
@@ -1338,6 +1344,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 printf("ps_pc[1]: %f \n", ps_pc[1]);
             }
 
+            */
 
             // Apply filter (filtered backprojection mode only)
             //
@@ -1377,6 +1384,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
                     weight = 1.0f*(D*D)/(L*L);
 
+                    /*
                     if (idx == 31457380)
                     {
                         printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
@@ -1408,6 +1416,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
 
                     }
+                    */
+
                 //}
                 /*
                  * else
