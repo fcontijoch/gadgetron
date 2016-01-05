@@ -76,7 +76,8 @@ int main(int argc, char** argv)
   parms.add_parameter( 'w', COMMAND_LINE_INT, 1, "Number of projections", true, "720" );
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'S', COMMAND_LINE_FLOAT, 1, "Samples per pixel (float) in integral", false );
-  
+  parms.add_parameter( 'c', COMMAND_LINE_INT, 1, "Detector Flag (bool) 0:flat, 1: cylcindrical", true,"0");
+
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
     parms.print_parameter_list();
@@ -134,6 +135,8 @@ int main(int argc, char** argv)
   float angular_spacing = parms.get_parameter('v')->get_float_value();
 
   unsigned int number_of_projections = parms.get_parameter('w')->get_int_value();
+
+  bool use_cyl_det = bool(params.get_parameter('c')->get_int_value());
 
   // Load or generate binning data
   //
@@ -228,6 +231,12 @@ int main(int argc, char** argv)
     E->set_num_samples_per_pixel( parm->get_float_value() );
   
   E->setup( acquisition, binning, is_dims_in_mm );
+
+  // FC use_cyl_det parameter
+  std::cout << "Use_cyl_det " << use_cyl_det << std::endl;
+  // FC added new cylindrical option
+  E->set_use_cylindrical_detector(use_cyl_det);
+
 
   // Initialize the device
   // - just to report more accurate timings
