@@ -136,7 +136,7 @@ int main(int argc, char** argv)
 
   unsigned int number_of_projections = parms.get_parameter('w')->get_int_value();
 
-  bool use_cyl_det = bool(params.get_parameter('c')->get_int_value());
+  bool use_cyl_det = bool(parms.get_parameter('c')->get_int_value());
 
   // Load or generate binning data
   //
