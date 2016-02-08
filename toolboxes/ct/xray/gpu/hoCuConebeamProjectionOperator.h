@@ -45,17 +45,22 @@ namespace Gadgetron{
       
       std::vector<float> &angles = acquisition->get_geometry()->get_angles();      
       float min_value = *std::min_element(angles.begin(), angles.end() );
-      transform(angles.begin(), angles.end(), angles.begin(), bind2nd(std::minus<float>(), min_value));
+      float max_value = *std::max_element(angles.begin(), angles.end() );
+
+      // This shifts the angles up by min_value such that they go from 0 to orig_max_angle + min_value
+      //transform(angles.begin(), angles.end(), angles.begin(), bind2nd(std::minus<float>(), min_value));
  
       // Are we in a short scan setup?
-      // - we say yes if we have covered less than PI+3*delta radians
-      //
+      // First figure out the span of our angles
+      //float angle_span = *std::max_element(angles.begin(), angles.end() );
+      float angle_span = max_value - min_value;
 
-      float angle_span = *std::max_element(angles.begin(), angles.end() );
+      // Then figure out the fan angle
       floatd2 ps_dims_in_mm = acquisition_->get_geometry()->get_FOV();
       float SDD = acquisition_->get_geometry()->get_SDD();
       float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD)); // Fan angle
       
+      // - we say yes if we have covered less than PI+3*delta radians
       if( angle_span*CUDART_PI_F/180.0f > CUDART_PI_F+3.0f*delta )
         short_scan_ = false;
       else
