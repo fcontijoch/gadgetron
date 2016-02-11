@@ -25,6 +25,7 @@
 #include <sstream>
 #include <math_constants.h>
 #include <boost/program_options.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace std;
 using namespace Gadgetron;
@@ -59,6 +60,7 @@ int main(int argc, char** argv)
     ("device",po::value<int>(&device)->default_value(0),"Number of the device to use (0 indexed)")
     ("downsample,D",po::value<unsigned int>(&downsamples)->default_value(0),"Downsample projections this factor")
     ("rho",po::value<float>(&rho)->default_value(0.9f),"Rho-value for line search. Must be between 0 and 1. Smaller value means faster runtime, but less stable algorithm.")
+    ("initX,x", po::value<string>(), "Initial Recon Guess")
     ;
 
   //FC Minute change
@@ -156,6 +158,22 @@ int main(int argc, char** argv)
   solver.set_output_mode(hoCuNlcgSolver<float>::OUTPUT_VERBOSE);
   solver.set_non_negativity_constraint(true);
   solver.set_rho(rho);
+
+
+  string initial_guess;
+  if (vm.count("initX")){
+      std::cout << "Loading initial reconstruction result" << std::endl;
+      initial_guess = vm["initX"].as<string>();
+      boost::shared_ptr< hoNDArray<float>> init_guess_vol = read_nd_array<float>( initial_guess.c_str() );
+      boost::shared_ptr< hoCuNDArray<float>>  cu_init_guess_vol;
+
+      //cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol);
+      cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol.get());
+
+      std::cout << "Adding initial recon to solver_x0" << std::endl;
+      solver.set_x0(cu_init_guess_vol);
+  }
+
 
   hoCuNDArray<float> projections = *ps->get_projections();
   
