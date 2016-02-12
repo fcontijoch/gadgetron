@@ -45,7 +45,7 @@ public:
         if( (i % dumpFreq_) == 0 )
         {
             printf("Dumping frame\n");
-            char filename[19];
+            char filename[1000];
             sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
             write_nd_array<float>(x, filename);
         }
