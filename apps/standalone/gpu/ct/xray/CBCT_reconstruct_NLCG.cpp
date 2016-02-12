@@ -154,8 +154,6 @@ int main(int argc, char** argv)
   std::size_t found = outputFile.find('.');
   string dump_name = outputFile.substr(0,found);
 //  std::size_t length = outputFile.copy(dump_name,found);
-
-
   std::cout << "Output Name " << outputFile << std::endl;
   std::cout << "Dump Name " << dump_name << std::endl;
 
@@ -168,6 +166,7 @@ int main(int argc, char** argv)
   solver.set_non_negativity_constraint(true);
   solver.set_rho(rho);
   solver.set_dump_frequency(dump);
+  solver.set_dump_name(dump_name)
 
 
   string initial_guess;

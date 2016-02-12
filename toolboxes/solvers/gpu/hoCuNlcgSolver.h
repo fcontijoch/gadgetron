@@ -6,6 +6,8 @@
 #include "complext.h"
 #include "nlcgSolver.h"
 #include "hoSolverUtils.h"
+#include <iostream>
+#include <string>
 
 namespace Gadgetron{
 
@@ -37,7 +39,7 @@ public:
         {
         printf("Dumping frame\n");
         char filename[19];
-        sprintf(filename, "img-itr-%04i.real", i);
+        sprintf(filename, "%s_%04i.real",dumpName_,i);
         write_nd_array<float>(x, filename);
         }
     };
@@ -49,8 +51,12 @@ public:
         this->dumpFreq_ = dumpFreq;
     };
 
+    void set_dump_name(string dumpName) {
+       this->dumpName_ = dumpName;
+    };
+
 protected:
   unsigned int dumpFreq_;
-
+  string dumpName_;
 };
 }
