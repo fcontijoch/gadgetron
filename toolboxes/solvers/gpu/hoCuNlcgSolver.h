@@ -47,7 +47,7 @@ public:
             printf("Dumping frame\n");
             char filename[1000];
             sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
-            printf("File name: %c \n",filename);
+            std::cout << "Dump Name " << filename << std::endl;
             write_nd_array<float>(x, filename);
         }
     };
