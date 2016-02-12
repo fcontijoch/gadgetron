@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 	uintd3 imageSize;
 	floatd3 voxelSize;
 	int device;
-  unsigned int dump;
+    unsigned int dump;
 	unsigned int downsamples;
 	unsigned int iterations;
 	unsigned int inner_iterations;
@@ -183,16 +183,21 @@ int main(int argc, char** argv)
 	E->set_codomain_dimensions(ps->get_projections()->get_dimensions().get());
     E->set_use_cylindrical_detector(use_cyl_det);
 
-	mySbcCgSolver solver;
+    std::size_t found = outputFile.find('.');
+    string dump_name;
+    std::size_t length = str.copy(dump_name,found);
+    std::cout << "Dump Name " << dump_name << std::endl;
 
+
+	mySbcCgSolver solver;
 	solver.set_encoding_operator(E);
 	solver.set_max_outer_iterations(iterations);
 	solver.get_inner_solver()->set_max_iterations(inner_iterations);
 	solver.get_inner_solver()->set_tc_tolerance(1e-6);
-  solver.get_inner_solver()->set_output_mode(hoCuCgSolver<float>::OUTPUT_VERBOSE);
+    solver.get_inner_solver()->set_output_mode(hoCuCgSolver<float>::OUTPUT_VERBOSE);
 	solver.set_non_negativity_filter(non_negativity_weight);
 	solver.set_output_mode(hoCuSbcCgSolver<float>::OUTPUT_VERBOSE);
-  solver.set_dump_frequency(dump);
+    solver.set_dump_frequency(dump);
 
 	if (vm.count("TV")){
 		boost::shared_ptr<hoCuPartialDerivativeOperator<float,4> > dx (new hoCuPartialDerivativeOperator<float,4>(0) );

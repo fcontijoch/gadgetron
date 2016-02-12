@@ -41,6 +41,7 @@ int main(int argc, char** argv)
   int device;
   unsigned int downsamples;
   unsigned int iterations;
+  unsigned int dump;
   float rho;
   po::options_description desc("Allowed options");
 
@@ -61,6 +62,7 @@ int main(int argc, char** argv)
     ("downsample,D",po::value<unsigned int>(&downsamples)->default_value(0),"Downsample projections this factor")
     ("rho",po::value<float>(&rho)->default_value(0.9f),"Rho-value for line search. Must be between 0 and 1. Smaller value means faster runtime, but less stable algorithm.")
     ("initX,x", po::value<string>(), "Initial Recon Guess")
+    ("dump",po::value<unsigned int>(&dump)->default_value(0),"Dump image every N iterations")
     ;
 
   //FC Minute change
@@ -158,7 +160,6 @@ int main(int argc, char** argv)
   solver.set_output_mode(hoCuNlcgSolver<float>::OUTPUT_VERBOSE);
   solver.set_non_negativity_constraint(true);
   solver.set_rho(rho);
-  unsigned int dump = 2;
   solver.set_dump_frequency(dump);
 
 
