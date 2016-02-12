@@ -152,8 +152,10 @@ int main(int argc, char** argv)
   E->set_use_cylindrical_detector(use_cyl_det);
 
   std::size_t found = outputFile.find('.');
-  string dump_name;
-  std::size_t length = outputFile.copy(dump_name,found);
+  string dump_name = outputFile.substr(0,found);
+//  std::size_t length = outputFile.copy(dump_name,found);
+
+
   std::cout << "Output Name " << outputFile << std::endl;
   std::cout << "Dump Name " << dump_name << std::endl;
 
