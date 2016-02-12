@@ -153,7 +153,8 @@ int main(int argc, char** argv)
 
   std::size_t found = outputFile.find('.');
   string dump_name;
-  std::size_t length = std::str.copy(dump_name,found);
+  std::size_t length = outputFile.copy(dump_name,found);
+  std::cout << "Output Name " << outputFile << std::endl;
   std::cout << "Dump Name " << dump_name << std::endl;
 
   hoCuNlcgSolver<float> solver;
