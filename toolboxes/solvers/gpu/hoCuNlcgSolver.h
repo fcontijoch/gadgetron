@@ -20,6 +20,7 @@ public:
 
   virtual void iteration_callback(hoCuNDArray<T>* x,int i,REAL data_res,REAL reg_res){
 
+        /*
 	  if (i == 0){
 		  std::ofstream textFile("residual.txt",std::ios::trunc);
 	  	  textFile << data_res << std::endl;
@@ -30,6 +31,14 @@ public:
 	  std::stringstream ss;
 	  ss << "iteration-" << i << ".real";
       write_nd_array(x,ss.str().c_str());
+      */
+
+      //if( (counter_ % dumpFreq_) == 0 ){
+        printf("Dumping frame\n");
+        char filename[19];
+        sprintf(filename, "img-itr-%04i.real", i);
+        write_nd_array<float>(x, filename);
+      //}
   };
 };
 }
