@@ -158,6 +158,8 @@ int main(int argc, char** argv)
   solver.set_output_mode(hoCuNlcgSolver<float>::OUTPUT_VERBOSE);
   solver.set_non_negativity_constraint(true);
   solver.set_rho(rho);
+  unsigned int dump = 2;
+  solver.set_dump_frequency(dump);
 
 
   string initial_guess;
