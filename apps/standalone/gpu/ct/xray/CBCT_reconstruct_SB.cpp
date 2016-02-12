@@ -183,12 +183,6 @@ int main(int argc, char** argv)
 	E->set_codomain_dimensions(ps->get_projections()->get_dimensions().get());
     E->set_use_cylindrical_detector(use_cyl_det);
 
-    std::size_t found = outputFile.find('.');
-    string dump_name;
-    std::size_t length = str.copy(dump_name,found);
-    std::cout << "Dump Name " << dump_name << std::endl;
-
-
 	mySbcCgSolver solver;
 	solver.set_encoding_operator(E);
 	solver.set_max_outer_iterations(iterations);

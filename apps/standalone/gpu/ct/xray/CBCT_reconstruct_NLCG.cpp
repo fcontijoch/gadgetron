@@ -151,6 +151,10 @@ int main(int argc, char** argv)
   E->set_codomain_dimensions(ps->get_projections()->get_dimensions().get());
   E->set_use_cylindrical_detector(use_cyl_det);
 
+  std::size_t found = outputFile.find('.');
+  string dump_name;
+  std::size_t length = std::str.copy(dump_name,found);
+  std::cout << "Dump Name " << dump_name << std::endl;
 
   hoCuNlcgSolver<float> solver;
 
