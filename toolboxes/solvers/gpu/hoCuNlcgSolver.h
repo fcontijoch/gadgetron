@@ -46,7 +46,7 @@ public:
         {
             printf("Dumping frame\n");
             char filename[19];
-            sprintf(filename, "%s_%04i.real",dumpName_,i);
+            sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
             write_nd_array<float>(x, filename);
         }
     };

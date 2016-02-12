@@ -166,7 +166,7 @@ int main(int argc, char** argv)
   solver.set_non_negativity_constraint(true);
   solver.set_rho(rho);
   solver.set_dump_frequency(dump);
-  solver.set_dump_name(dump_name)
+  solver.set_dump_name(dump_name);
 
 
   string initial_guess;
