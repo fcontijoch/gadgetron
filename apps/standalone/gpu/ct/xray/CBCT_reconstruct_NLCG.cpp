@@ -173,18 +173,17 @@ int main(int argc, char** argv)
   float mot_X_val;
   float mot_Y_val;
   float mot_Z_val;
+  floatd3 mot_XYZ_val;
   for( unsigned int i=0; i<numProjs; i++ )
   {
       mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
       mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
       mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
 
-      mot_XYZ[0].push_back = mot_X_val;
-      mot_XYZ[1].push_back = mot_Y_val;
-      mot_XYZ[2].push_back = mot_Z_val;
+      mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
+
+      mot_XYZ.push_back(mot_XYZ_val);
   }
-
-
 
   hoCuNlcgSolver<float> solver;
 
