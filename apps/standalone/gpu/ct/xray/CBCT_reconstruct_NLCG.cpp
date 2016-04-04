@@ -43,6 +43,10 @@ int main(int argc, char** argv)
   unsigned int iterations;
   unsigned int dump;
   float rho;
+  floatd2 mot_X;
+  floatd2 mot_Y;
+  floatd2 mot_Z;
+
   po::options_description desc("Allowed options");
 
   desc.add_options()
@@ -63,6 +67,9 @@ int main(int argc, char** argv)
     ("rho",po::value<float>(&rho)->default_value(0.9f),"Rho-value for line search. Must be between 0 and 1. Smaller value means faster runtime, but less stable algorithm.")
     ("initX,x", po::value<string>(), "Initial Recon Guess")
     ("dump",po::value<unsigned int>(&dump)->default_value(0),"Dump image every N iterations")
+    ("motion_X,mX",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
+    ("motion_Y,mY",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
+    ("motion_Z,mZ",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
     ;
 
   //FC Minute change
@@ -156,6 +163,28 @@ int main(int argc, char** argv)
 //  std::size_t length = outputFile.copy(dump_name,found);
   std::cout << "Output Name " << outputFile << std::endl;
   std::cout << "Dump Name " << dump_name << std::endl;
+
+  // FC create vector of dX, dY, and dZ over the acquisitions
+  float mot_X_extent = mot_X[1] - mot_X[0];
+  float mot_Y_extent = mot_Y[1] - mot_Y[0];
+  float mot_Z_extent = mot_Z[1] - mot_Z[0];
+
+  std::vector<floatd3> mot_XYZ;
+  float mot_X_val;
+  float mot_Y_val;
+  float mot_Z_val;
+  for( unsigned int i=0; i<numProjs; i++ )
+  {
+      mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
+      mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
+      mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
+
+      mot_XYZ[0].push_back = mot_X_val;
+      mot_XYZ[1].push_back = mot_Y_val;
+      mot_XYZ[2].push_back = mot_Z_val;
+  }
+
+
 
   hoCuNlcgSolver<float> solver;
 
