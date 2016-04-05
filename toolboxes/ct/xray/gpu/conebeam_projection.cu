@@ -1869,7 +1869,8 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         bool use_offset_correction,
         bool accumulate,
         cuNDArray<float> *cosine_weights,
-        cuNDArray<float> *frequency_filter
+        cuNDArray<float> *frequency_filter,
+        std::vector<floatd3> mot_XYZ
 )
 {
     // printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
@@ -1936,6 +1937,14 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
 
     int num_batches = (num_projections_in_bin+projections_per_batch-1) / projections_per_batch;
     printf("Num Batches: %d \n",num_batches);
+
+    // FC: Check that we have mot_XYZ_ vector
+    floatd3 mot_XYZ_val;
+    for( unsigned int i=0; i<projections->get_size(2); i++ )
+    {
+        mot_XYZ_val = mot_XYZ[i];
+        std::cout << "i =  " << i << ", x: " << mot_XYZ_val[0] << ", y: " << mot_XYZ_val[1] << ", z: " << mot_XYZ_val[2] << std::endl;
+    }
 
 
     // printf("Utility Variables .... DONE\n");
@@ -2264,9 +2273,9 @@ template void conebeam_backwards_projection<true>
 
 template void conebeam_backwards_projection_cyl<false>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*);
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, std::vector<floatd3>);
 
 template void conebeam_backwards_projection_cyl<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*);
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, std::vector<floatd3>);
 }

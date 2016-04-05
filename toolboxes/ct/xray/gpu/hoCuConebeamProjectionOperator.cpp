@@ -291,13 +291,16 @@ void hoCuConebeamProjectionOperator
     printf("hoCuCBProjOper.cpp mult_MH \n");
     printf("use_cyl_det_: %u \n", use_cyl_det_);
 
-    printf("hoCuCBProjOper.cpp print mot_XYZ_val \n");
+    // FC: Check that we have mot_XYZ_ vector
+    /*
+     * printf("hoCuCBProjOper.cpp print mot_XYZ_val \n");
     floatd3 mot_XYZ_val;
     for( unsigned int i=0; i<projections->get_size(2); i++ )
     {
         mot_XYZ_val = mot_XYZ_[i];
         std::cout << "i =  " << i << ", x: " << mot_XYZ_val[0] << ", y: " << mot_XYZ_val[1] << ", z: " << mot_XYZ_val[2] << std::endl;
     }
+    */
 
 	for( int b=0; b<binning_->get_number_of_bins(); b++ ) {
 
@@ -347,7 +350,7 @@ void hoCuConebeamProjectionOperator
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                          cosine_weights_.get(), frequency_filter_.get() );
+                          cosine_weights_.get(), frequency_filter_.get(), mot_XYZ_);
             }
             else
             {
@@ -375,7 +378,7 @@ void hoCuConebeamProjectionOperator
                           binning_->get_bin(b),
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
-                          SDD, SAD, short_scan_, use_offset_correction_, accumulate);
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate, mot_XYZ_);
             }
             else
             {
