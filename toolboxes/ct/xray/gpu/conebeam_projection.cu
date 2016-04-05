@@ -1455,22 +1455,22 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 //
 
 template <bool FBP>
-void conebeam_backwards_projection( hoCuNDArray<float> *projections,
-		hoCuNDArray<float> *image,
-		std::vector<float> angles,
-		std::vector<floatd2> offsets,
-		std::vector<unsigned int> indices,
-		int projections_per_batch,
-		intd3 is_dims_in_pixels,
-		floatd3 is_dims_in_mm,
-		floatd2 ps_dims_in_mm,
-		float SDD,
-		float SAD,
-		bool short_scan,
-		bool use_offset_correction,
-		bool accumulate,
-		cuNDArray<float> *cosine_weights,
-		cuNDArray<float> *frequency_filter
+void conebeam_backwards_projection(hoCuNDArray<float> *projections,
+        hoCuNDArray<float> *image,
+        std::vector<float> angles,
+        std::vector<floatd2> offsets,
+        std::vector<unsigned int> indices,
+        int projections_per_batch,
+        intd3 is_dims_in_pixels,
+        floatd3 is_dims_in_mm,
+        floatd2 ps_dims_in_mm,
+        float SDD,
+        float SAD,
+        bool short_scan,
+        bool use_offset_correction,
+        bool accumulate,
+        cuNDArray<float> *cosine_weights,
+        cuNDArray<float> *frequency_filter
 )
 {
     printf("Input Parameters....\n");
@@ -1868,9 +1868,9 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         bool short_scan,
         bool use_offset_correction,
         bool accumulate,
+        std::vector<floatd3> mot_XYZ,
         cuNDArray<float> *cosine_weights,
-        cuNDArray<float> *frequency_filter,
-        std::vector<floatd3> mot_XYZ
+        cuNDArray<float> *frequency_filter
 )
 {
     // printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
@@ -2273,9 +2273,9 @@ template void conebeam_backwards_projection<true>
 
 template void conebeam_backwards_projection_cyl<false>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, std::vector<floatd3>);
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
 
 template void conebeam_backwards_projection_cyl<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*, cuNDArray<float>*, std::vector<floatd3>);
+        int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
 }

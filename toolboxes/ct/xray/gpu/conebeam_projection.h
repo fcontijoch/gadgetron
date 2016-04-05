@@ -85,8 +85,7 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
         bool use_offset_correction,
         bool accumulate, 
         cuNDArray<float> *cosine_weights = 0x0,
-        cuNDArray<float> *frequency_filter = 0x0,
-        std::vector<floatd3> mot_XYZ
+        cuNDArray<float> *frequency_filter = 0x0
   );
 
   template <bool FBP> EXPORTGPUXRAY void conebeam_backwards_projection_cyl(
@@ -104,8 +103,8 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
         bool short_scan,
         bool use_offset_correction,
         bool accumulate,
+        std::vector<floatd3> mot_XYZ,
         cuNDArray<float> *cosine_weights = 0x0,
-        cuNDArray<float> *frequency_filter = 0x0,
-        std::vector<floatd3> mot_XYZ
+        cuNDArray<float> *frequency_filter = 0x0
   );
 }
