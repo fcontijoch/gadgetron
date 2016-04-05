@@ -67,9 +67,9 @@ int main(int argc, char** argv)
     ("rho",po::value<float>(&rho)->default_value(0.9f),"Rho-value for line search. Must be between 0 and 1. Smaller value means faster runtime, but less stable algorithm.")
     ("initX,x", po::value<string>(), "Initial Recon Guess")
     ("dump",po::value<unsigned int>(&dump)->default_value(0),"Dump image every N iterations")
-    ("motion_X,mX",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
-    ("motion_Y,mY",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
-    ("motion_Z,mZ",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
+    ("motion_X,X",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
+    ("motion_Y,Y",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
+    ("motion_Z,Z",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
     ;
 
   //FC Minute change
@@ -174,17 +174,18 @@ int main(int argc, char** argv)
   float mot_Y_val;
   float mot_Z_val;
   floatd3 mot_XYZ_val;
-  std::cout << "Motion Vector " << std::endl;
+  std::cout << "CBCT_reconstruct_NLCG: Motion Vector " << std::endl;
   for( unsigned int i=0; i<numProjs; i++ )
   {
       mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
       mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
       mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
-      std::cout << "i =  " << i << "x: " << mot_X_val << "y: " << mot_Y_val<< "z: " << mot_Z_val << std::endl;
+      std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
       mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
 
       mot_XYZ.push_back(mot_XYZ_val);
   }
+  E->set_motionXYZ_vector(mot_XYZ);
 
   hoCuNlcgSolver<float> solver;
 

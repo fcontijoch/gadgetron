@@ -97,6 +97,10 @@ namespace Gadgetron{
       use_cyl_det_ = use_cyl_det;      
     }
 
+    inline void set_motionXYZ_vector( std::vector<floatd3> mot_XYZ){
+        mot_XYZ_ = mot_XYZ;
+    }
+
     inline void set_use_offset_correction( bool use_correction ){
       use_offset_correction_ = use_correction;
       allow_offset_correction_override_ = false;
@@ -154,5 +158,6 @@ namespace Gadgetron{
     bool allow_offset_correction_override_;
     boost::shared_ptr< cuNDArray<float> > cosine_weights_;
     boost::shared_ptr< cuNDArray<float> > frequency_filter_;
+    std::vector<floatd3> mot_XYZ_;
   };
 }
