@@ -817,7 +817,8 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
             // Accumulate result
             //
-            floatd3  samplePoint2 = samplePoint + mot_XYZ_val;
+            // Move points in opposite direction of backwards projection
+            floatd3  samplePoint2 = samplePoint - mot_XYZ_val;
 
 
             result += tex3D( image_tex, samplePoint2[0], samplePoint2[1], samplePoint2[2] );
