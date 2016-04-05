@@ -1186,11 +1186,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
     if (idx == 31457380)
     {
-         printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
-        // FC: Check that we have mot_XYZ_ vector
-        floatd3  mot_XYZ_val = mot_XYZ[projection];
-        std::cout << "proj =  " << projection << ", x: " << mot_XYZ_val[0] << ", y: " << mot_XYZ_val[1] << ", z: " << mot_XYZ_val[2] << std::endl;
-
+         //printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
     }
 
 
@@ -1251,7 +1247,11 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             if (idx == 31457380)
             {
-                //    printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
+                 printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
+                // FC: Check that we have mot_XYZ_ vector
+                floatd3  mot_XYZ_val = mot_XYZ[projection];
+                printf("proj =  %d, x: %f, y: %f, z: %f \n",projection, mot_XYZ_val[0], mot_XYZ_val[1], mot_XYZ_val[2]);
+
             }
 
 
