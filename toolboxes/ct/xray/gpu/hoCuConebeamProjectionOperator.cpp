@@ -224,10 +224,11 @@ void hoCuConebeamProjectionOperator
             conebeam_forwards_projection_cyl( projections2, &image_3d,
                     acquisition_->get_geometry()->get_angles(),
                     acquisition_->get_geometry()->get_offsets(),
+                    mot_XYZ_,
                     binning_->get_bin(b),
                     projections_per_batch_, samples_per_pixel_,
                     is_dims_in_mm_, ps_dims_in_mm,
-                              SDD, SAD,mot_XYZ_);
+                              SDD, SAD);
         }
         else
         {
