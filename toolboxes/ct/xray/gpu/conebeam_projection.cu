@@ -676,6 +676,7 @@ __global__ void
 conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
                                          float * __restrict__ angles,
                                          floatd2 *offsets,
+                                         floatd3 *mot_XYZ,
                                          floatd3 is_dims_in_pixels,
                                          floatd3 is_dims_in_mm,
                                          intd2 ps_dims_in_pixels_int,
@@ -795,9 +796,14 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 #endif
         dir /= float(num_samples_per_ray); // now in step size units
 
+
+        // Define shift of object
+        floatd3  mot_XYZ_val = mot_XYZ[projection];
+
         //
         // Perform line integration
         //
+
 
         float result = 0.0f;
 
@@ -811,8 +817,10 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
             // Accumulate result
             //
+            floatd3  samplePoint2 = samplePoint + mot_XYZ_val;
 
-            result += tex3D( image_tex, samplePoint[0], samplePoint[1], samplePoint[2] );
+
+            result += tex3D( image_tex, samplePoint2[0], samplePoint2[1], samplePoint2[2] );
         }
 
         // Output (normalized to the length of the ray)
@@ -837,7 +845,8 @@ conebeam_forwards_projection_cyl( hoCuNDArray<float> *projections,
                                   floatd3 is_dims_in_mm,
                                   floatd2 ps_dims_in_mm,
                                   float SDD,
-                                  float SAD)
+                                  float SAD,
+                                  std::vector<floatd3> mot_XYZ)
 {
     //
     // Validate the input
@@ -916,6 +925,7 @@ conebeam_forwards_projection_cyl( hoCuNDArray<float> *projections,
 
     std::vector<float> angles_vec;
     std::vector<floatd2> offsets_vec;
+    std::vector<floatd3> mot_XYZ_vec;
 
     for( int p=0; p<indices.size(); p++ ){
 
@@ -927,10 +937,12 @@ conebeam_forwards_projection_cyl( hoCuNDArray<float> *projections,
 
         angles_vec.push_back(angles[from_id]);
         offsets_vec.push_back(offsets[from_id]);
+        mot_XYZ_vec.push_back(mot_XYZ[from_id]);
     }
 
     thrust::device_vector<float> angles_devVec(angles_vec);
     thrust::device_vector<floatd2> offsets_devVec(offsets_vec);
+    thrust::device_vector<floatd3> mot_XYZ_devVec(mot_XYZ_vec);
 
     //
     // Iterate over the batches
@@ -960,11 +972,12 @@ conebeam_forwards_projection_cyl( hoCuNDArray<float> *projections,
 
         float* raw_angles = thrust::raw_pointer_cast(&angles_devVec[from_projection]);
         floatd2* raw_offsets = thrust::raw_pointer_cast(&offsets_devVec[from_projection]);
+        floatd3* raw_mot_XYZ = thrust::raw_pointer_cast(&mot_XYZ_devVec[from_projection]);
 
         conebeam_forwards_projection_kernel_cyl<<< dimGrid, dimBlock, 0, mainStream >>>
-                                                                                      ( projections_DevPtr, raw_angles, raw_offsets,
-                                                                                        is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-                                                                                        projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x) );
+                ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ
+                  is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
+                  projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x) );
 
         // If not initial batch, start copying the old stuff
         //

@@ -227,7 +227,7 @@ void hoCuConebeamProjectionOperator
                     binning_->get_bin(b),
                     projections_per_batch_, samples_per_pixel_,
                     is_dims_in_mm_, ps_dims_in_mm,
-                              SDD, SAD);
+                              SDD, SAD,mot_XYZ_);
         }
         else
         {
