@@ -835,18 +835,18 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 //
 
 void
-conebeam_forwards_projection_cyl( hoCuNDArray<float> *projections,
+conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   hoCuNDArray<float> *image,
                                   std::vector<float> angles,
                                   std::vector<floatd2> offsets,
+                                  std::vector<floatd3> mot_XYZ,
                                   std::vector<unsigned int> indices,
                                   int projections_per_batch,
                                   float samples_per_pixel,
                                   floatd3 is_dims_in_mm,
                                   floatd2 ps_dims_in_mm,
                                   float SDD,
-                                  float SAD,
-                                  std::vector<floatd3> mot_XYZ)
+                                  float SAD)
 {
     //
     // Validate the input
