@@ -1247,13 +1247,15 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Projection angle
             //
 
+
+            // FC: Lets move object pos given mot value
+            floatd3  mot_XYZ_val = mot_XYZ[projection];
+            floatd3  pos2 = pos + mot_XYZ_val;
             if (idx == idx_middle)
             {
                  printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
                 // FC: Check that we have mot_XYZ_ vector
-                floatd3  mot_XYZ_val = mot_XYZ[projection];
                 printf("proj =  %d, x: %f, y: %f, z: %f \n",projection, mot_XYZ_val[0], mot_XYZ_val[1], mot_XYZ_val[2]);
-
             }
 
 
@@ -1267,7 +1269,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Rotated image coordinate (local to the projection's coordinate system)
             //
 
-            const floatd3 pos_proj = mul(inverseRotation, pos);
+            const floatd3 pos_proj = mul(inverseRotation, pos2);
 
             // Project the image position onto the projection plate.
             // Account for half-fan and sag offsets.
