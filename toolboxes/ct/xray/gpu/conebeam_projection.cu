@@ -975,7 +975,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
         floatd3* raw_mot_XYZ = thrust::raw_pointer_cast(&mot_XYZ_devVec[from_projection]);
 
         conebeam_forwards_projection_kernel_cyl<<< dimGrid, dimBlock, 0, mainStream >>>
-                ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ
+                ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ,
                   is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
                   projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x) );
 
