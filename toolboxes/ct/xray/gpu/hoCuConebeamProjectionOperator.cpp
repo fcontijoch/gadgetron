@@ -292,10 +292,10 @@ void hoCuConebeamProjectionOperator
     printf("use_cyl_det_: %u \n", use_cyl_det_);
 
     printf("hoCuCBProjOper.cpp print mot_XYZ_val \n");
-floatd3 mot_XYZ_val;
+    floatd3 mot_XYZ_val;
     for( unsigned int i=0; i<projections->get_size(2); i++ )
     {
-        mot_XYZ_val = mot_XYZ[i];
+        mot_XYZ_val = mot_XYZ_[i];
         std::cout << "i =  " << i << ", x: " << mot_XYZ_val[0] << ", y: " << mot_XYZ_val[1] << ", z: " << mot_XYZ_val[2] << std::endl;
     }
 
