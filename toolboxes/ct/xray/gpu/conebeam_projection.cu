@@ -1184,7 +1184,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
     const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
 
 
-    const int idx_middle = floor(0.5*(gridDim.x*blockDim.x + gridDim.y*blockDim.y + gridDim.z*blockDim.z));
+    const int idx_middle = roundf(0.5*(gridDim.x*blockDim.x + gridDim.y*blockDim.y + gridDim.z*blockDim.z));
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
     if (idx == idx_middle)
     {
