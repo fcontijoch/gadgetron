@@ -1255,7 +1255,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             {
                  printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
                 // FC: Check that we have mot_XYZ_ vector
-                printf("proj =  %d, x: %f, y: %f, z: %f \n",projection, mot_XYZ_val[0], mot_XYZ_val[1], mot_XYZ_val[2]);
+                //printf("proj =  %d, x: %f, y: %f, z: %f \n",projection, mot_XYZ_val[0], mot_XYZ_val[1], mot_XYZ_val[2]);
             }
 
 
