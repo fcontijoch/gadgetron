@@ -1183,8 +1183,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
     const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
 
+
+    const int idx_middle = floor(0.5*(gridDim.x*blockDim.x + gridDim.y*blockDim.y + gridDim.z*blockDim.z));
     //std::cout << "conbeam_projection.cu - BackProject_Cyl_Kernel Func. Detector  Boolean: " << use_cyl_det_ << std::endl;
-    if (idx == 31457380)
+    if (idx == idx_middle)
     {
          //printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
     }
@@ -1218,7 +1220,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
         // Image space coordinate in metric units
         //
 
-        if (idx == 31457380)
+        if (idx == idx_middle)
         {
             //    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Image Space Coordinates \n");
         }
@@ -1234,7 +1236,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
         float result = 0.0f;
 
-        if (idx == 31457380)
+        if (idx == idx_middle)
         {
             //   printf("conbeam_projection.cu - BackProject_Cyl Kernel - Start Backprojection Loop\n");
         }
@@ -1245,7 +1247,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Projection angle
             //
 
-            if (idx == 31457380)
+            if (idx == idx_middle)
             {
                  printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Angle \n");
                 // FC: Check that we have mot_XYZ_ vector
@@ -1271,7 +1273,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Account for half-fan and sag offsets.
             //
 
-            if (idx == 31457380)
+            if (idx == idx_middle)
             {
                 // printf("conbeam_projection.cu - BackProject_Cyl Kernel - BP Start and End Point \n");
             }
@@ -1283,7 +1285,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
-            if (idx == 31457380)
+            if (idx == idx_middle)
             {
                 // printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
             }
@@ -1292,7 +1294,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             endPoint2d = floatd2(psi, epsi) - offsets[projection];
 
             /*
-                if (idx == 31457380)
+                if (idx == idx_middle)
                 {
                     printf("Values: \n");
                     printf("Projection: %u \n", projection);
@@ -1336,7 +1338,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 #endif
 
             /*
-            if (idx == 31457380)
+            if (idx == idx_middle)
             {
                 printf("Values: \n");
                 printf("ps_dims_in_mm[0]: %f \n", ps_dims_in_mm[0]);
@@ -1390,7 +1392,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 weight = 1.0f*(D*D)/(L*L);
 
                 /*
-                    if (idx == 31457380)
+                    if (idx == idx_middle)
                     {
                         printf("conbeam_projection.cu/BP_Cyl_Kernel Calculated Cyl Weight \n");
                         printf("Weighting Values: \n");
