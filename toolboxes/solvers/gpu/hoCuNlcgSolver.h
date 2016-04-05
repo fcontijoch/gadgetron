@@ -41,6 +41,8 @@ public:
       ss << "iteration-" << i << ".real";
       write_nd_array(x,ss.str().c_str());
       */
+        if (dumpFreq_ < 10000)
+        {
 
         if( (i % dumpFreq_) == 0 )
         {
@@ -49,6 +51,7 @@ public:
             sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
             std::cout << "Dump Name " << filename << std::endl;
             write_nd_array<float>(x, filename);
+        }
         }
     };
 
