@@ -57,6 +57,10 @@ main(int argc, char** argv)
     ("weight,w",po::value<float>(&reg_weight)->default_value(float(0.0f)),"Regularization weight")
     ("device",po::value<int>(&device)->default_value(0),"Number of the device to use (0 indexed)")
     ("downsample,D",po::value<unsigned int>(&downsamples)->default_value(0),"Downsample projections this factor")
+          ("dump",po::value<unsigned int>(&dump)->default_value(0),"Dump image every N iterations")
+          ("motion_X,X",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
+          ("motion_Y,Y",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
+          ("motion_Z,Z",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
     ;
   
   po::variables_map vm;
@@ -149,6 +153,35 @@ main(int argc, char** argv)
   if (E->get_use_offset_correction())
     	E->offset_correct(&projections);
 
+  std::size_t found = outputFile.find('.');
+  string dump_name = outputFile.substr(0,found);
+//  std::size_t length = outputFile.copy(dump_name,found);
+  std::cout << "Output Name " << outputFile << std::endl;
+  std::cout << "Dump Name " << dump_name << std::endl;
+
+  // FC create vector of dX, dY, and dZ over the acquisitions
+  float mot_X_extent = mot_X[1] - mot_X[0];
+  float mot_Y_extent = mot_Y[1] - mot_Y[0];
+  float mot_Z_extent = mot_Z[1] - mot_Z[0];
+
+  std::vector<floatd3> mot_XYZ;
+  float mot_X_val;
+  float mot_Y_val;
+  float mot_Z_val;
+  floatd3 mot_XYZ_val;
+  std::cout << "CBCT_reconstruct_CG: Motion Vector " << std::endl;
+  for( unsigned int i=0; i<numProjs; i++ )
+  {
+      mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
+      mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
+      mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
+      std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
+      mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
+
+      mot_XYZ.push_back(mot_XYZ_val);
+  }
+  E->set_motionXYZ_vector(mot_XYZ);
+
   // Define regularization operator
   boost::shared_ptr< hoCuIdentityOperator<float> >
     I( new hoCuIdentityOperator<float>() );
@@ -167,6 +200,8 @@ main(int argc, char** argv)
   solver.set_max_iterations(iterations);
   solver.set_tc_tolerance(1e-8);
   solver.set_output_mode(hoCuCgSolver<float>::OUTPUT_VERBOSE);
+  solver.set_dump_frequency(dump);
+  solver.set_dump_name(dump_name);
 
   /*  if (vm.count("TV")){
     boost::shared_ptr<hoCuPartialDerivativeOperator<float,4> > dx (new hoCuPartialDerivativeOperator<float,4>(0) );

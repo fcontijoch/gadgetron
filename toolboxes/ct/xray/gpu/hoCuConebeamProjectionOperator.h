@@ -79,9 +79,9 @@ namespace Gadgetron{
       
       preprocessed_ = true;
 
+      //FC lets set mot vector to 0
       floatd3 mot_XYZ_val = floatd3(0.0,0.0,0.0);
       size_t numProjs = acquisition_->get_projections()->get_size(2);
-      //FC lets set mot vector to 0
       for( unsigned int i=0; i<numProjs; i++ )
       {
           mot_XYZ_.push_back(mot_XYZ_val);
