@@ -60,5 +60,7 @@ namespace Gadgetron{
 
   private:
     int _it;
+    unsigned int dumpFreq_ = 99999;
+    string dumpName_;
   };
 }
