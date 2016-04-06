@@ -45,6 +45,7 @@ public:
                 write_nd_array<float>(x, filename);
             }
         }
+        _it++;
     };
 
 
