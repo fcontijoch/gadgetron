@@ -36,11 +36,11 @@ public:
         if (dumpFreq_ < 10000)
         {
 
-            if( (i % dumpFreq_) == 0 )
+            if( (_it % dumpFreq_) == 0 )
             {
                 printf("Dumping frame\n");
                 char filename[1000];
-                sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
+                sprintf(filename, "%s_%04i.real",dumpName_.c_str(),_it);
                 std::cout << "Dump Name " << filename << std::endl;
                 write_nd_array<float>(x, filename);
             }
