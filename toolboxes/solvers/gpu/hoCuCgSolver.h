@@ -5,42 +5,46 @@
 #include "cgSolver.h"
 #include "hoNDArray_math.h"
 #include "hoCuNDArray_math.h"
+#include <string>
 
 namespace Gadgetron{
 
-  /** \class hoCuCgSolver
+/** \class hoCuCgSolver
       \brief Instantiation of the conjugate gradient solver on the cpu.
 
       The class hoCuCgSolver is a convienience wrapper for the device independent cgSolver class.
       hoCuCgSolver instantiates the cgSolver for type hoNDArray<T>.
   */
-  template <class T> class hoCuCgSolver : public cgSolver< hoCuNDArray<T> >
-  {
-  public:
-    hoCuCgSolver() : cgSolver<hoCuNDArray<T> >(), _it(0) {}
-    virtual ~hoCuCgSolver() {}
+template <class T> class hoCuCgSolver : public cgSolver< hoCuNDArray<T> >
+{
+public:
+    hoCuCgSolver() : cgSolver<hoCuNDArray<T> >(), _it(0)
+    {
+
+    }
+    virtual ~hoCuCgSolver() {};
 
     // TSS: This is too expensive to do in general. Move responsibility of dumping to the apps.
     virtual void solver_dump(hoCuNDArray<T>* x)
     {
         /*std::stringstream ss;
-			ss << "iteration-" << _it << ".real";
-			write_nd_array(x,ss.str().c_str());
-			_it++;
+            ss << "iteration-" << _it << ".real";
+            write_nd_array(x,ss.str().c_str());
+            _it++;
           */
-            if (dumpFreq_ < 10000)
-            {
+        if (dumpFreq_ < 10000)
+        {
 
-                if( (i % dumpFreq_) == 0 )
-                {
-                    printf("Dumping frame\n");
-                    char filename[1000];
-                    sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
-                    std::cout << "Dump Name " << filename << std::endl;
-                    write_nd_array<float>(x, filename);
-                }
+            if( (i % dumpFreq_) == 0 )
+            {
+                printf("Dumping frame\n");
+                char filename[1000];
+                sprintf(filename, "%s_%04i.real",dumpName_.c_str(),i);
+                std::cout << "Dump Name " << filename << std::endl;
+                write_nd_array<float>(x, filename);
             }
-      }
+        }
+    };
 
 
 
@@ -58,9 +62,11 @@ namespace Gadgetron{
         this->dumpName_ = dumpName;
     };
 
-  private:
+private:
     int _it;
-    unsigned int dumpFreq_ = 99999;
+
+protected:
+    unsigned int dumpFreq_;
     string dumpName_;
-  };
+};
 }
