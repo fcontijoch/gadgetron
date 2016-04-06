@@ -7,7 +7,8 @@
 #include "hoCuNDArray_math.h"
 #include <string>
 
-namespace Gadgetron{
+using namespace std;
+using namespace Gadgetron;
 
 /** \class hoCuCgSolver
       \brief Instantiation of the conjugate gradient solver on the cpu.
@@ -69,4 +70,4 @@ protected:
     unsigned int dumpFreq_;
     string dumpName_;
 };
-}
+
