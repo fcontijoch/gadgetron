@@ -782,6 +782,14 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
         const float sampling_distance = norm((aend-a1)*dir)/num_samples_per_ray;
 
+        // Shift start point based on motion vector
+        // Define shift of object
+        floatd3 mot_XYZ_val = mot_XYZ[co[2]];
+        // Move points in opposite direction of backwards projection
+        startPoint -= mot_XYZ_val;
+
+
+
         // Now perform conversion of the line integral start/end into voxel coordinates
         //
 
@@ -796,10 +804,6 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 #endif
         dir /= float(num_samples_per_ray); // now in step size units
 
-
-        // Define shift of object
-        floatd3 is_dims_in_mm_per_pixels = is_dims_in_mm/is_dims_in_pixels;
-        floatd3 mot_XYZ_val = mot_XYZ[co[2]]/is_dims_in_mm_per_pixels;
 
         //
         // Perform line integration
@@ -817,12 +821,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 #endif
 
             // Accumulate result
-            //
-            // Move points in opposite direction of backwards projection
-            floatd3  samplePoint2 = samplePoint + mot_XYZ_val;
-
-
-            result += tex3D( image_tex, samplePoint2[0], samplePoint2[1], samplePoint2[2] );
+            result += tex3D( image_tex, samplePoint[0], samplePoint[1], samplePoint[2] );
         }
 
         // Output (normalized to the length of the ray)
