@@ -798,7 +798,8 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
 
         // Define shift of object
-        floatd3  mot_XYZ_val = mot_XYZ[co[2]];
+        floatd3 is_dims_in_mm_per_pixels = is_dims_in_mm/is_dims_in_pixels;
+        floatd3 mot_XYZ_val = mot_XYZ[co[2]]/is_dims_in_mm_per_pixels;
 
         //
         // Perform line integration
