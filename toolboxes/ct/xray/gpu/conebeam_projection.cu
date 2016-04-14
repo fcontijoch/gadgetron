@@ -718,7 +718,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         //const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
 
         // FC added quarter pixel shift
-        const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.25);
+        const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.5);
 #else
         const floatd2 ps_pc = floatd2(co[0], co[1]);
 #endif
@@ -1354,8 +1354,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 #else
             //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
 
-            // FC added quarter pixel shifter
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f));
+            // FC added quarter pixel shifte in u direction
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5f);
 #endif
 
             /*
