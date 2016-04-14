@@ -715,7 +715,10 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         //
 
 #ifdef PS_ORIGIN_CENTERING
-        const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
+        //const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
+
+        // FC added quarter pixel shift
+        const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.25);
 #else
         const floatd2 ps_pc = floatd2(co[0], co[1]);
 #endif
@@ -1347,10 +1350,12 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
 #ifndef PS_ORIGIN_CENTERING
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
-            //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f)) * ps_dims_in_pixels + floatd2(0.5f);
+           floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
 #else
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
+            //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
+
+            // FC added quarter pixel shifter
+            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f));
 #endif
 
             /*
