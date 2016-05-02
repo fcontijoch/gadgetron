@@ -722,11 +722,11 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         // FC added quarter pixel shift
         if (quart_det_shift_ == 1)
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.5);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25f,0.5f);
         }
         else
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5,0.5);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5f,0.5f);
         }
 #else
         ps_pc = floatd2(co[0], co[1]);
