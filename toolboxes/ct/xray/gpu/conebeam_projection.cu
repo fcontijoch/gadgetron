@@ -713,7 +713,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         startPoint = mul(rotation, startPoint);
 
         // Projection plate indices
-        //
+        // FC ADDED THE SHIFT AS AN OPTION: either shift by half or a quarter depending on parameter
 
         floatd2 ps_pc;
         floatd2 ps_pc_shift;
@@ -1362,6 +1362,11 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             //ps_dims_in_mm_cyl[0]=10.0*ps_dims_in_mm[0];
             ps_dims_in_mm_cyl[1]=ps_dims_in_mm[1];
 
+
+
+
+            //FC added a quarter pixel shift
+
 #ifndef PS_ORIGIN_CENTERING
            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f)) + floatd2(0.5f)/ps_dims_in_pixels;
 #else
@@ -1371,7 +1376,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5);
 
 
-            const floatd2 ps_pc;
+            floatd2 ps_pc;
             if (quart_det_shift_ == 1)
             {
                 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5));
