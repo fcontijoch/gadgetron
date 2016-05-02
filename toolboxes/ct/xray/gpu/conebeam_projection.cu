@@ -715,7 +715,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         // Projection plate indices
         //
 
-        const floatd2 ps_pc;
+        floatd2 ps_pc;
         floatd2 ps_pc_shift;
 #ifdef PS_ORIGIN_CENTERING
         //const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
