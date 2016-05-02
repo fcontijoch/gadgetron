@@ -1372,11 +1372,11 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const floatd2 ps_pc;
             if (quart_det_shift_ == 1)
             {
-                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5);
+                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5));
             }
             else
             {
-                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f,0.5);
+                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f,0.5));
             }
 #endif
 
