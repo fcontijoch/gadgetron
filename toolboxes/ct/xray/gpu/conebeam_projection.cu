@@ -715,21 +715,21 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         // Projection plate indices
         //
 
+        const floatd2 ps_pc;
 #ifdef PS_ORIGIN_CENTERING
         //const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
 
         // FC added quarter pixel shift
-        const floatd2 ps_pc;
         if (quart_det_shift_ == 1)
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.5);
         }
         else
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5,0.5);
         }
 #else
-        const floatd2 ps_pc = floatd2(co[0], co[1]);
+        ps_pc = floatd2(co[0], co[1]);
 #endif
 
         // Convert the projection plate coordinates into image space,
