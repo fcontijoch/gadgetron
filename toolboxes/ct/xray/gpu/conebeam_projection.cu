@@ -722,11 +722,11 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         const floatd2 ps_pc;
         if (quart_det_shift_ == 1)
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.5);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25);
         }
         else
         {
-            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5,0.5);
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
         }
 #else
         const floatd2 ps_pc = floatd2(co[0], co[1]);
