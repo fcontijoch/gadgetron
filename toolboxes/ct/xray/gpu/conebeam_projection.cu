@@ -2278,7 +2278,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         cudaFuncSetCacheConfig(conebeam_backwards_projection_kernel<FBP>, cudaFuncCachePreferL1);
 
         conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
-             ( image_device->get_data_ptr(), raw_angles, raw_offsets, raw_mot_XYZ,
+             ( image_device->get_data_ptr(), raw_angles, raw_offsets, raw_mot_XYZ, quart_det_shift_,
                is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
                projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true );
 
