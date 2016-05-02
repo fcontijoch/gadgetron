@@ -48,6 +48,7 @@ namespace Gadgetron{
       float max_value = *std::max_element(angles.begin(), angles.end() );
 
       // This shifts the angles up by min_value such that they go from 0 to orig_max_angle + min_value
+      //  FC removed shift of angles
       //transform(angles.begin(), angles.end(), angles.begin(), bind2nd(std::minus<float>(), min_value));
  
       // Are we in a short scan setup?
@@ -110,6 +111,11 @@ namespace Gadgetron{
         mot_XYZ_ = mot_XYZ;
     }
 
+    inline void set_quarter_det_shift(unsigned int quart_det_shift)
+    {
+        quart_det_shift_ = quart_det_shift;
+    }
+
     inline void set_use_offset_correction( bool use_correction ){
       use_offset_correction_ = use_correction;
       allow_offset_correction_override_ = false;
@@ -168,5 +174,6 @@ namespace Gadgetron{
     boost::shared_ptr< cuNDArray<float> > cosine_weights_;
     boost::shared_ptr< cuNDArray<float> > frequency_filter_;
     std::vector<floatd3> mot_XYZ_;
+    unsigned int quart_det_shift_;
   };
 }

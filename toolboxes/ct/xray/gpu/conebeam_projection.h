@@ -57,6 +57,7 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
                 std::vector<float> angles,
                 std::vector<floatd2> offsets,
                 std::vector<floatd3> mot_XYZ,
+                unsigned int quart_det_shift_,
                 std::vector<unsigned int> indices,
                 int projections_per_batch,
                 float samples_per_pixel,
@@ -105,6 +106,7 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
         bool use_offset_correction,
         bool accumulate,
         std::vector<floatd3> mot_XYZ,
+        unsigned int quart_det_shift_,
         cuNDArray<float> *cosine_weights = 0x0,
         cuNDArray<float> *frequency_filter = 0x0
   );

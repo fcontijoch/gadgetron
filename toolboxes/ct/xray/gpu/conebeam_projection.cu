@@ -677,6 +677,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
                                          float * __restrict__ angles,
                                          floatd2 *offsets,
                                          floatd3 *mot_XYZ,
+                                         unsigned int quart_det_shift_,
                                          floatd3 is_dims_in_pixels,
                                          floatd3 is_dims_in_mm,
                                          intd2 ps_dims_in_pixels_int,
@@ -718,7 +719,15 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         //const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.5);
 
         // FC added quarter pixel shift
-        const floatd2 ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.0);
+        const floatd2 ps_pc;
+        if (quart_det_shift_ == 1)
+        {
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.25,0.5);
+        }
+        else
+        {
+            ps_pc = floatd2(co[0], co[1]) + floatd2(0.5,0.5);
+        }
 #else
         const floatd2 ps_pc = floatd2(co[0], co[1]);
 #endif
@@ -844,6 +853,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   std::vector<float> angles,
                                   std::vector<floatd2> offsets,
                                   std::vector<floatd3> mot_XYZ,
+                                  unsigned int quart_det_shift_,
                                   std::vector<unsigned int> indices,
                                   int projections_per_batch,
                                   float samples_per_pixel,
@@ -979,7 +989,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
         floatd3* raw_mot_XYZ = thrust::raw_pointer_cast(&mot_XYZ_devVec[from_projection]);
 
         conebeam_forwards_projection_kernel_cyl<<< dimGrid, dimBlock, 0, mainStream >>>
-                ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ,
+                ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ, quart_det_shift_,
                   is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
                   projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x) );
 
@@ -1185,6 +1195,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                                           const float * __restrict__ angles,
                                           floatd2 *offsets,
                                           floatd3 *mot_XYZ,
+                                          unsigned int quart_det_shift_,
                                           intd3 is_dims_in_pixels_int,
                                           floatd3 is_dims_in_mm,
                                           floatd2 ps_dims_in_pixels,
@@ -1355,8 +1366,22 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm_cyl) + floatd2(0.5f));
 
             // FC added quarter pixel shifte in u direction
-            floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.0);
+            //floatd2 ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5);
+
+
+            const floatd2 ps_pc;
+            if (quart_det_shift_ == 1)
+            {
+                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.25f,0.5);
+            }
+            else
+            {
+                ps_pc = ((endPoint2d / ps_dims_in_mm) + floatd2(0.5f,0.5);
+            }
 #endif
+
+
+
 
             /*
             if (idx == idx_middle)
@@ -1897,6 +1922,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
                                         bool use_offset_correction,
                                         bool accumulate,
                                         std::vector<floatd3> mot_XYZ,
+                                        unsigned int quart_det_shift_,
                                         cuNDArray<float> *cosine_weights,
                                         cuNDArray<float> *frequency_filter
                                         )
@@ -2308,9 +2334,9 @@ int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*,
 
 template void conebeam_backwards_projection_cyl<false>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, unsigned int, cuNDArray<float>*, cuNDArray<float>*);
 
 template void conebeam_backwards_projection_cyl<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, unsigned int, cuNDArray<float>*, cuNDArray<float>*);
 }
