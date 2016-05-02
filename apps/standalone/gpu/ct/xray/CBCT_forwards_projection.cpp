@@ -77,6 +77,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'S', COMMAND_LINE_FLOAT, 1, "Samples per pixel (float) in integral", false );
   parms.add_parameter( 'c', COMMAND_LINE_INT, 1, "Detector Flag (bool) 0:flat, 1: cylcindrical", true,"0");
+  parms.add_parameter( 'Q', COMMAND_LINE_INT, 1, "quart_det_shift (bool) 0:off, 1: yes", true,"0");
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -137,6 +138,9 @@ int main(int argc, char** argv)
   unsigned int number_of_projections = parms.get_parameter('w')->get_int_value();
 
   bool use_cyl_det = bool(parms.get_parameter('c')->get_int_value());
+
+  unsigned int quart_det_shift = parms.get_parameter('Q')->get_int_value();
+
 
   // Load or generate binning data
   //
@@ -236,6 +240,7 @@ int main(int argc, char** argv)
   std::cout << "Use_cyl_det " << use_cyl_det << std::endl;
   // FC added new cylindrical option
   E->set_use_cylindrical_detector(use_cyl_det);
+  E->set_quarter_det_shift(quart_det_shift);
 
 
   // Initialize the device
