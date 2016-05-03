@@ -225,7 +225,6 @@ void hoCuConebeamProjectionOperator
                     acquisition_->get_geometry()->get_angles(),
                     acquisition_->get_geometry()->get_offsets(),
                     mot_XYZ_,
-                    quart_det_shift_,
                     binning_->get_bin(b),
                     projections_per_batch_, samples_per_pixel_,
                     is_dims_in_mm_, ps_dims_in_mm,
@@ -352,7 +351,7 @@ void hoCuConebeamProjectionOperator
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                          mot_XYZ_, quart_det_shift_, cosine_weights_.get(), frequency_filter_.get());
+                          mot_XYZ_, cosine_weights_.get(), frequency_filter_.get());
             }
             else
             {
@@ -380,7 +379,7 @@ void hoCuConebeamProjectionOperator
                           binning_->get_bin(b),
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
-                          SDD, SAD, short_scan_, use_offset_correction_, accumulate, mot_XYZ_, quart_det_shift_);
+                          SDD, SAD, short_scan_, use_offset_correction_, accumulate, mot_XYZ_);
             }
             else
             {

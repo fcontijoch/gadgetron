@@ -44,7 +44,6 @@ main(int argc, char** argv)
     floatd2 mot_X;
     floatd2 mot_Y;
     floatd2 mot_Z;
-    unsigned int quart_det_shift;
 
 
     po::options_description desc("Allowed options");
@@ -66,7 +65,6 @@ main(int argc, char** argv)
             ("motion_X,X",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
             ("motion_Y,Y",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
             ("motion_Z,Z",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
-            ("quart_det_shift,Q",po::value<unsigned int>(&quart_det_shift)->default_value(0),"Quarter Detect Shift: 0 - No, 1 - Yes")
             ;
 
     po::variables_map vm;
@@ -187,7 +185,6 @@ main(int argc, char** argv)
         mot_XYZ.push_back(mot_XYZ_val);
     }
     E->set_motionXYZ_vector(mot_XYZ);
-    E->set_quarter_det_shift(quart_det_shift);
 
     // Define regularization operator
     boost::shared_ptr< hoCuIdentityOperator<float> >
