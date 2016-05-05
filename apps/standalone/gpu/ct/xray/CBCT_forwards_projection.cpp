@@ -77,6 +77,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'S', COMMAND_LINE_FLOAT, 1, "Samples per pixel (float) in integral", false );
   parms.add_parameter( 'c', COMMAND_LINE_INT, 1, "Detector Flag (bool) 0:flat, 1: cylcindrical", true,"0");
+  parms.add_parameter( 'D', COMMAND_LINE_INT, 1, "Device Selector", true,"1");
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -88,6 +89,11 @@ int main(int argc, char** argv)
     return 1;
   }
   
+  //FC add device option
+  unsigned int device = parms.get_parameter('D')->get_int_value();
+  cudaSetDevice(device);
+  cudaDeviceReset();
+
   std::string image_filename = (char*)parms.get_parameter('d')->get_string_value();
   std::string projections_filename = (char*)parms.get_parameter('r')->get_string_value();
   std::string acquisition_filename = (char*)parms.get_parameter('h')->get_string_value();
