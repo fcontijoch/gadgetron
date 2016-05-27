@@ -65,6 +65,7 @@ main(int argc, char** argv)
             ("motion_X,X",po::value<floatd2>(&mot_X)->default_value(floatd2(0.0f,0.0f)),"Motion in X direction in mm")
             ("motion_Y,Y",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
             ("motion_Z,Z",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
+            ("initX,x", po::value<string>(), "Initial Recon Guess")
             ;
 
     po::variables_map vm;
@@ -206,6 +207,20 @@ main(int argc, char** argv)
     solver.set_output_mode(hoCuCgSolver<float>::OUTPUT_VERBOSE);
     solver.set_dump_frequency(dump);
     solver.set_dump_name(dump_name);
+
+    string initial_guess;
+    if (vm.count("initX")){
+        std::cout << "Loading initial reconstruction result" << std::endl;
+        initial_guess = vm["initX"].as<string>();
+        boost::shared_ptr< hoNDArray<float>> init_guess_vol = read_nd_array<float>( initial_guess.c_str() );
+        boost::shared_ptr< hoCuNDArray<float>>  cu_init_guess_vol;
+
+        //cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol);
+        cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol.get());
+
+        std::cout << "Adding initial recon to solver_x0" << std::endl;
+        solver.set_x0(cu_init_guess_vol);
+    }
 
     /*  if (vm.count("TV")){
     boost::shared_ptr<hoCuPartialDerivativeOperator<float,4> > dx (new hoCuPartialDerivativeOperator<float,4>(0) );
