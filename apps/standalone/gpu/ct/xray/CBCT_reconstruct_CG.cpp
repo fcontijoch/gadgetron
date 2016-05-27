@@ -23,6 +23,7 @@
 #include <sstream>
 #include <math_constants.h>
 #include <boost/program_options.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace std;
 using namespace Gadgetron;
