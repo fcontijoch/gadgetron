@@ -684,7 +684,8 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
                                          int num_projections,
                                          float SDD,
                                          float SAD,
-                                         int num_samples_per_ray )
+                                         int num_samples_per_ray,
+                                         bool ffs_)
 {
     const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
     const int num_elements = prod(ps_dims_in_pixels_int)*num_projections;
@@ -979,7 +980,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
         conebeam_forwards_projection_kernel_cyl<<< dimGrid, dimBlock, 0, mainStream >>>
                 ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ,
                   is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-                  projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x) );
+                  projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x),ffs);
 
         // If not initial batch, start copying the old stuff
         //
@@ -1191,7 +1192,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                                           float num_projections_in_bin,
                                           float SDD,
                                           float SAD,
-                                          bool accumulate )
+                                          bool accumulate,
+                                          bool ffs_)
 {
     // Image voxel to backproject into (pixel coordinate and index)
     //
@@ -2251,7 +2253,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
              ( image_device->get_data_ptr(), raw_angles, raw_offsets, raw_mot_XYZ,
                is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true );
+               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true, ffs);
 
         CHECK_FOR_CUDA_ERROR();
         // printf("Invoke Kernel .... DONE\n");
