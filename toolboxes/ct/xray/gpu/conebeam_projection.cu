@@ -1307,7 +1307,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     ffs_dir = 1.0f;
                 }
                 else {
-                    ffs_dir = =1.0f;
+                    ffs_dir = -1.0f;
                 }
                 ffsShift = ffs_shift*ffs_dir;
             }
