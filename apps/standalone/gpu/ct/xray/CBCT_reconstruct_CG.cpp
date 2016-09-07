@@ -45,6 +45,7 @@ main(int argc, char** argv)
     floatd2 mot_X;
     floatd2 mot_Y;
     floatd2 mot_Z;
+    int ffs;
 
 
     po::options_description desc("Allowed options");
@@ -67,6 +68,7 @@ main(int argc, char** argv)
             ("motion_Y,Y",po::value<floatd2>(&mot_Y)->default_value(floatd2(0.0f,0.0f)),"Motion in Y direction in mm")
             ("motion_Z,Z",po::value<floatd2>(&mot_Z)->default_value(floatd2(0.0f,0.0f)),"Motion in Z direction in mm")
             ("initX,x", po::value<string>(), "Initial Recon Guess")
+            ("ffs",po::value<int>(&ffs)->default_value(0),"Use XY flying focal spot (0 = no, 1 = yes)")
             ;
 
     po::variables_map vm;
