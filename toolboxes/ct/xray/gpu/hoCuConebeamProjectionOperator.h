@@ -165,6 +165,7 @@ namespace Gadgetron{
     float samples_per_pixel_;
     bool use_fbp_;
     bool use_cyl_det_;
+    bool ffs_;
     unsigned int projections_per_batch_;
     bool preprocessed_;
     bool short_scan_;
