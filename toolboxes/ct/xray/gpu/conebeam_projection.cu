@@ -1893,6 +1893,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
                                         bool use_offset_correction,
                                         bool accumulate,
                                         std::vector<floatd3> mot_XYZ,
+                                        bool ffs,
                                         cuNDArray<float> *cosine_weights,
                                         cuNDArray<float> *frequency_filter
                                         )
