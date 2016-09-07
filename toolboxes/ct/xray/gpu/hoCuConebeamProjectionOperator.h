@@ -106,6 +106,11 @@ namespace Gadgetron{
       use_cyl_det_ = use_cyl_det;      
     }
 
+    inline void set_use_flying_focal_spot( bool ffs ){
+      ffs_ = ffs;
+    }
+
+
     inline void set_motionXYZ_vector( std::vector<floatd3> mot_XYZ){
         mot_XYZ_ = mot_XYZ;
     }
