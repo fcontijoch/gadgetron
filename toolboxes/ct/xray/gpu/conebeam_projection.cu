@@ -1298,17 +1298,14 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             }
 
 
-            const floatd3 ffsShift;
+            const floatd3 ffsShift = floatd3(0.0f,0.0f,0.0f);
             if (ffs_) //This means flying focal spot is on
             {
                 const float ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
                 const double ffs_dir = pow(-1,projection);
-                ffsShift = floatd3(ffs_shift*ffs_dir,0.0f,0.0f);
+                ffsShift[0] = ffs_shift*ffs_dir;
             }
-            else
-            {
-                ffsShift = floatd3(0.0f,0.0f,0.0f);
-            }
+
 
             const floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
             startPoint = startPoint + ffsShift;
