@@ -1312,12 +1312,19 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 ffsShift = ffs_shift*ffs_dir;
             }
 
-
+            // X POSITION CAN BE SHIFTED BY FFS
             const floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
-            //startPoint[0] = ffsShift;
+
 
             floatd3 dir = pos_proj - startPoint;
             dir = dir / dir[1];
+
+            // Find angle R from vector dir
+            float Theta = atan2f(dir[0],dir[1])
+            float R = Theta + (M_PI)/2;
+            float S = asin2f(ffs_shift*sinf(R)/SDD);
+            float Psi = S + Theta;
+
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
