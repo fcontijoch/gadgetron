@@ -1307,8 +1307,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             }
 
 
-            const floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
-            startPoint[0] = ffsShift;
+            const floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
+            //startPoint[0] = ffsShift;
 
             floatd3 dir = pos_proj - startPoint;
             dir = dir / dir[1];
