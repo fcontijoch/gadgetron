@@ -847,7 +847,8 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   floatd3 is_dims_in_mm,
                                   floatd2 ps_dims_in_mm,
                                   float SDD,
-                                  float SAD)
+                                  float SAD,
+                                  bool ffs)
 {
     //
     // Validate the input
@@ -2303,9 +2304,9 @@ int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*,
 
 template void conebeam_backwards_projection_cyl<false>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, cuNDArray<float>*, cuNDArray<float>*);
 
 template void conebeam_backwards_projection_cyl<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, cuNDArray<float>*, cuNDArray<float>*);
 }
