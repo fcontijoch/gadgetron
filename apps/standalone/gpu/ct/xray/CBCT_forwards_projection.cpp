@@ -77,6 +77,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'S', COMMAND_LINE_FLOAT, 1, "Samples per pixel (float) in integral", false );
   parms.add_parameter( 'c', COMMAND_LINE_INT, 1, "Detector Flag (bool) 0:flat, 1: cylcindrical", true,"0");
+  parms.add_parameter( 'x', COMMAND_LINE_INT, 1, "Flying Focal Spot Flag (bool) 0:off, 1: on", true,"0");
   parms.add_parameter( 'D', COMMAND_LINE_INT, 1, "Device Selector", true,"1");
 
   parms.parse_parameter_list(argc, argv);
@@ -144,6 +145,8 @@ int main(int argc, char** argv)
 
   bool use_cyl_det = bool(parms.get_parameter('c')->get_int_value());
 
+  bool use_ffs = bool(parms.get_parameter('x')->get_int_value());
+
   // Load or generate binning data
   //
   
@@ -172,10 +175,23 @@ int main(int argc, char** argv)
   //
   
   std::vector<float> angles;
-
-  for( unsigned int i=0; i<number_of_projections; i++ ){
-    float angle = start_angle + i*angular_spacing;
+  float angle;
+  if(use_ffs) //IF FFS is on, it will half the number of projections but do each angle twice.
+  {
+      for( unsigned int i=0; i<number_of_projections/2; i++ )
+      {
+        angle = start_angle + i*angular_spacing;
+        angles.push_back(angle);
+        angles.push_back(angle);
+      }
+  }
+  else
+  {
+  for( unsigned int i=0; i<number_of_projections; i++ )
+  {
+    angle = start_angle + i*angular_spacing;
     angles.push_back(angle);
+  }
   }
   
   // Create projection offsets array
@@ -242,7 +258,7 @@ int main(int argc, char** argv)
   std::cout << "Use_cyl_det " << use_cyl_det << std::endl;
   // FC added new cylindrical option
   E->set_use_cylindrical_detector(use_cyl_det);
-
+  E->set_use_flying_focal_spot(use_ffs);
 
   // Initialize the device
   // - just to report more accurate timings
