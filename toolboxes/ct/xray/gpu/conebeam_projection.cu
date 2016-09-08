@@ -709,7 +709,22 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         // Find start and end point for the line integral (image space)
         //
 
-        floatd3 startPoint = floatd3(0.0f, -SAD, 0.0f);
+        float ffsShift = 0.0f;
+        float ffs_dir = 0.0f;
+        float ffs_shift = 0.0f;
+        if (ffs_) //This means flying focal spot is on
+        {
+            ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
+            if ( projection%2 == 0) {
+                ffs_dir = 1.0f;
+            }
+            else {
+                ffs_dir = -1.0f;
+            }
+            ffsShift = ffs_shift*ffs_dir;
+        }
+
+        floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
         startPoint = mul(rotation, startPoint);
 
         // Projection plate indices
@@ -731,7 +746,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         // Define the end point for the line integrals
         //
 
-        const float ADD = SDD - SAD; // in mm.
+        //const float ADD = SDD - SAD; // in mm.
         //		floatd3 endPoint = floatd3(proj_coords[0], ADD, proj_coords[1]);
         floatd3 endPoint = floatd3(SDD*std::sin(proj_coords[0]), SDD*std::cos(proj_coords[0]) - SAD, std::cos(proj_coords[0]) * proj_coords[1]);
         endPoint = mul(rotation, endPoint);
@@ -1322,15 +1337,22 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             float Theta = atan2f(dir[0],dir[1]);
             float R = Theta + (M_PI)/2;
             float S = asin(ffsShift*sinf(R)/SDD);
+            // This angle is the one from the detector focal spot that hits the same point on the detector as the shifted FFS
             float Psi = S + Theta;
 
             // Do we need to change epsi calculation?
+            // Don't believe so
 
 
+            // This is the endpoint on the flat detector
             const floatd3 endPoint = startPoint + dir * SDD;
 
+            // Lets define the angle psi and epsi that define the readout
             floatd2 endPoint2d;
+
+            // This is the angle from the detector focal spot thorugh the pixel to the detector
             const float psi = atan2f(endPoint[0],SDD);
+
             const float epsi = endPoint[2] * std::cos(psi);
             if (idx == idx_middle)
             {
@@ -1338,7 +1360,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 printf("Orig psi: %f \n", psi);
                 printf("New psi: %f \n", Psi);
             }
-            endPoint2d = floatd2(psi, epsi) - offsets[projection];
+            //endPoint2d = floatd2(psi, epsi) - offsets[projection];
+            // Replace detector focal angle with flying focal spot adjusted angle
+            endPoint2d = floatd2(Psi, epsi) - offsets[projection];
 
             /*
                 if (idx == idx_middle)
@@ -1412,8 +1436,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 //
 
 
-                //if( use_cyl_det_ )
-                //{
+                //FC: Do we need to edit this given flying focal spot?
 
                 const float xx = pos[0];
                 const float yy = pos[1];
