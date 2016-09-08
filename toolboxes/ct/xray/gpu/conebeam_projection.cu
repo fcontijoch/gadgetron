@@ -1300,9 +1300,10 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             float ffsShift = 0.0f;
             float ffs_dir = 0.0f;
+            float ffs_shift = 0.0f;
             if (ffs_) //This means flying focal spot is on
             {
-                const float ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
+                ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
                 if ( projection%2 == 0) {
                     ffs_dir = 1.0f;
                 }
@@ -1318,9 +1319,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             dir = dir / dir[1];
 
             // Find angle R from vector dir
-            float Theta = atan2f(dir[0],dir[1])
+            float Theta = atan2f(dir[0],dir[1]);
             float R = Theta + (M_PI)/2;
-            float S = asin2f(ffs_shift*sinf(R)/SDD);
+            float S = asin2f(ffsShift*sinf(R)/SDD);
             float Psi = S + Theta;
 
             // Do we need to change epsi calculation?
