@@ -1356,9 +1356,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             const float epsi = endPoint[2] * std::cos(psi);
             if (idx == idx_middle)
             {
-                printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
-                printf("Orig psi: %f \n", psi);
-                printf("New psi: %f \n", Psi);
+            //    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
+            //    printf("Orig psi: %f \n", psi);
+            //    printf("New psi: %f \n", Psi);
             }
             //endPoint2d = floatd2(psi, epsi) - offsets[projection];
             // Replace detector focal angle with flying focal spot adjusted angle
