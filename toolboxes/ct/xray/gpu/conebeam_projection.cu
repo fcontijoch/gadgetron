@@ -715,7 +715,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         if (ffs_) //This means flying focal spot is on
         {
             ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
-            if ( projection%2 == 0) {
+            if ( co[2]%2 == 0) {
                 ffs_dir = 1.0f;
             }
             else {
