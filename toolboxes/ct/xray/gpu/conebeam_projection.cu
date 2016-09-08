@@ -1321,7 +1321,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             // Find angle R from vector dir
             float Theta = atan2f(dir[0],dir[1]);
             float R = Theta + (M_PI)/2;
-            float S = asin2f(ffsShift*sinf(R)/SDD);
+            float S = asin(ffsShift*sinf(R)/SDD);
             float Psi = S + Theta;
 
             // Do we need to change epsi calculation?
