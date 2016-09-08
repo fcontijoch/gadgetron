@@ -1314,8 +1314,6 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             // X POSITION CAN BE SHIFTED BY FFS
             const floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
-
-
             floatd3 dir = pos_proj - startPoint;
             dir = dir / dir[1];
 
@@ -1325,15 +1323,20 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             float S = asin2f(ffs_shift*sinf(R)/SDD);
             float Psi = S + Theta;
 
+            // Do we need to change epsi calculation?
+
+
             const floatd3 endPoint = startPoint + dir * SDD;
 
             floatd2 endPoint2d;
-            if (idx == idx_middle)
-            {
-                // printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
-            }
             const float psi = atan2f(endPoint[0],SDD);
             const float epsi = endPoint[2] * std::cos(psi);
+            if (idx == idx_middle)
+            {
+                printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
+                printf("Orig psi: %f \n", psi);
+                printf("New psi: %f \n", Psi);
+            }
             endPoint2d = floatd2(psi, epsi) - offsets[projection];
 
             /*
