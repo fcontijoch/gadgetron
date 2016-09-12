@@ -712,8 +712,13 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         float ffsShift = 0.0f;
         float ffs_dir = 0.0f;
         float ffs_shift = 0.0f;
+        if (idx == 31457380)
+        {
+            printf("conbeam_projection.cu - ForwProject_Cyl Kernel \n");
+        }
         if (ffs_) //This means flying focal spot is on
         {
+            printf("FFS off \n");
             ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
             if ( co[2]%2 == 0) {
                 ffs_dir = 1.0f;
@@ -722,6 +727,13 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
                 ffs_dir = -1.0f;
             }
             ffsShift = ffs_shift*ffs_dir;
+        }
+        else;
+        {
+            if (idx == 31457380)
+            {
+                printf("FFS off \n");
+            }
         }
 
         floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
