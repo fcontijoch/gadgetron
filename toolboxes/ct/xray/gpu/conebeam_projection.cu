@@ -712,7 +712,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         float ffsShift = 0.0f;
         float ffs_dir = 0.0f;
         float ffs_shift = 0.0f;
-        if (ffs_ == 1.0) //This means flying focal spot is on
+        if (ffs_) //This means flying focal spot is on
         {
             ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
             if ( co[2]%2 == 0) {
@@ -1316,7 +1316,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             float ffsShift = 0.0f;
             float ffs_dir = 0.0f;
             float ffs_shift = 0.0f;
-            if (ffs_ == 1) //This means flying focal spot is on
+            if (ffs_) //This means flying focal spot is on
             {
                 ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
                 if ( projection%2 == 0) {
@@ -1360,7 +1360,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 
             floatd2 endPoint2d;
             // Replace detector focal angle with flying focal spot adjusted angle
-            if (ffs_ == 1) //This means flying focal spot is on
+            if (ffs_) //This means flying focal spot is on
             {
                 if (idx == idx_middle)
                 {
