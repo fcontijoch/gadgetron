@@ -718,7 +718,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         }
         if (ffs_) //This means flying focal spot is on
         {
-            printf("FFS off \n");
+            printf("FFS on \n");
             ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
             if ( co[2]%2 == 0) {
                 ffs_dir = 1.0f;
@@ -1340,6 +1340,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                 ffsShift = ffs_shift*ffs_dir;
             }
 
+
             // X POSITION CAN BE SHIFTED BY FFS
             const floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
             floatd3 dir = pos_proj - startPoint;
@@ -1366,8 +1367,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             if (idx == idx_middle)
             {
             //    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
-            printf("Orig psi: %f \n", psi);
-            printf("FFS psi: %f \n", Psi);
+                printf("Orig psi: %f \n", psi);
+                printf("FFS psi: %f \n", Psi);
             }
 
             floatd2 endPoint2d;
