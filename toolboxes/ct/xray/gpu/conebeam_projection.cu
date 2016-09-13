@@ -730,13 +730,6 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
             }
             ffsShift = ffs_shift*ffs_dir;
         }
-        else
-        {
-            if (idx == 31457380)
-            {
-                printf("FFS off \n");
-            }
-        }
 
         floatd3 startPoint = floatd3(ffsShift, -SAD, 0.0f);
         startPoint = mul(rotation, startPoint);
