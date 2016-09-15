@@ -714,13 +714,13 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         float ffs_shift = 0.0f;
         if (idx == 31457380)
         {
-            printf("conbeam_projection.cu - ForwProject_Cyl Kernel \n");
+            //printf("conbeam_projection.cu - ForwProject_Cyl Kernel \n");
         }
         if (ffs_) //This means flying focal spot is on
         {
             if (idx == 31457380)
             {
-                printf("FFS on \n");
+                //printf("FFS on \n");
             }
             ffs_shift = 0.25 * (2 * M_PI) * SDD / 800; // This currently hard codes view spacing of 0.45
             if ( co[2]%2 == 0)
@@ -1365,8 +1365,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             if (idx == idx_middle)
             {
             //    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using Cyl Det \n");
-                printf("Orig psi: %f \n", psi);
-                printf("FFS psi: %f \n", Psi);
+                //printf("Orig psi: %f \n", psi);
+                //printf("FFS psi: %f \n", Psi);
             }
 
             floatd2 endPoint2d;
@@ -1375,7 +1375,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             {
                 if (idx == idx_middle)
                 {
-                    printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using FFS \n");
+                    //printf("conbeam_projection.cu - BackProject_Cyl Kernel - Using FFS \n");
                 }
                 endPoint2d = floatd2(Psi, epsi) - offsets[projection];
             }
@@ -1383,7 +1383,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             {
                 if (idx == idx_middle)
                 {
-                    printf("conbeam_projection.cu - BackProject_Cyl Kernel - FFS OFF \n");
+                    //printf("conbeam_projection.cu - BackProject_Cyl Kernel - FFS OFF \n");
                 }
                 endPoint2d = floatd2(psi, epsi) - offsets[projection];
             }
@@ -2191,13 +2191,22 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
             // Redundancy correct
             // - for short scan mode
             //
+            printf("About to Apply Short Scan Redundancy .... \n");
+
 
             if( short_scan )
             {
-                // printf("Short Scan Redundancy .... \n");
+                if (ffs)
+                {
+                    printf("Skipped Short Scan Redundancy .... \n");
+                }
+                else
+                {
+                printf("Short Scan Redundancy .... \n");
                 float delta = std::atan(ps_dims_in_mm[0]/(2.0f*SDD));
                 redundancy_correct( projections_batch, raw_angles, delta );
-                // printf("Short Scan Redundancy .... DONE\n");
+                printf("Short Scan Redundancy .... DONE\n");
+                }
             }
 
             // Apply frequency filter
