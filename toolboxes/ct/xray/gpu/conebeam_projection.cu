@@ -1389,13 +1389,14 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
             }
 
 
-            /*
+
                 if (idx == idx_middle)
                 {
                     printf("Values: \n");
                     printf("Projection: %u \n", projection);
                     printf("Angle: %f \n", angle);
-                    printf("pos_proj[0]: %f \n", pos_proj[0]);
+                    /*
+                     * printf("pos_proj[0]: %f \n", pos_proj[0]);
                     printf("pos_proj[1]: %f \n", pos_proj[1]);
                     printf("pos_proj[2]: %f \n", pos_proj[2]);
                     printf("startPoint[0]: %f \n", startPoint[0]);
@@ -1413,8 +1414,9 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                     printf("endPoint2d[1]: %f \n", endPoint2d[1]);
                     printf("Psi: %f \n", psi);
                     printf("Epsi: %f \n", epsi);
+                    */
                 }
-                */
+
 
 
             // Convert metric projection coordinates into pixel coordinates
