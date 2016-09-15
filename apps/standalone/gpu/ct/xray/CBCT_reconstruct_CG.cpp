@@ -179,16 +179,35 @@ main(int argc, char** argv)
     float mot_Z_val;
     floatd3 mot_XYZ_val;
     std::cout << "CBCT_reconstruct_CG: Motion Vector " << std::endl;
-    for( unsigned int i=0; i<numProjs; i++ )
+    if (bool(ffs))
     {
-        mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
-        mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
-        mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
-        std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
-        mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
-
-        mot_XYZ.push_back(mot_XYZ_val);
+        // For FFS, we have half as many projection positions but we sample them twice
+        for( unsigned int i=0; i<numProjs/2; i++ )
+        {
+            mot_X_val = mot_X[0] + mot_X_extent*i/(numProjs/2);
+            mot_Y_val = mot_Y[0] + mot_Y_extent*i/(numProjs/2);
+            mot_Z_val = mot_Z[0] + mot_Z_extent*i/(numProjs/2);
+            std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
+            mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
+            // Push the values twice
+            mot_XYZ.push_back(mot_XYZ_val);
+            mot_XYZ.push_back(mot_XYZ_val);
+        }
     }
+    else
+    {
+        for( unsigned int i=0; i<numProjs; i++ )
+        {
+            mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
+            mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
+            mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
+            std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
+            mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
+
+            mot_XYZ.push_back(mot_XYZ_val);
+        }
+    }
+
     E->set_motionXYZ_vector(mot_XYZ);
 
     // Define regularization operator

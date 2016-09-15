@@ -2236,7 +2236,10 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
 
 
         } else if (use_offset_correction)
+        {
+            printf("Not doing FBP. Using Offset_SQRT correction .... \n");
             offset_correct_sqrt( projections_batch, raw_offsets, ps_dims_in_mm, SAD, SDD );
+        }
 
         // Build array for input texture
         //
