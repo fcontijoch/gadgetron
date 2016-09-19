@@ -233,11 +233,12 @@ main(int argc, char** argv)
     solver.set_dump_name(dump_name);
 
     string initial_guess;
+    boost::shared_ptr< hoNDArray<float>> init_guess_vol;
+    boost::shared_ptr< hoCuNDArray<float>>  cu_init_guess_vol;
     if (vm.count("initX")){
         std::cout << "Loading initial reconstruction result" << std::endl;
         initial_guess = vm["initX"].as<string>();
-        boost::shared_ptr< hoNDArray<float>> init_guess_vol = read_nd_array<float>( initial_guess.c_str() );
-        boost::shared_ptr< hoCuNDArray<float>>  cu_init_guess_vol;
+        init_guess_vol = read_nd_array<float>( initial_guess.c_str() );
 
         //cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol);
         cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol.get());
