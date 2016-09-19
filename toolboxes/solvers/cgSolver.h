@@ -253,6 +253,8 @@ namespace Gadgetron{
 
       if (this->get_x0().get()){
 	
+          std::cout << "About to test dimension size" << std::endl;
+
         if( !this->get_x0()->dimensions_equal( rhs )){
           throw std::runtime_error( "Error: cgSolver::initialize : RHS and initial guess must have same dimensions" );
         }

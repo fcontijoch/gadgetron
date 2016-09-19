@@ -59,6 +59,8 @@ namespace Gadgetron{
             std::vector<size_t>* dim;
             a->get_dimensions(dim);
 
+            std::cout << "Dim1: " << this->dimensions_->size() << " Dim2: " << dim->size() << std::endl;
+
             if ( this->dimensions_->size() != dim->size() ) return false;
 
             size_t NDim = this->dimensions_->size();
