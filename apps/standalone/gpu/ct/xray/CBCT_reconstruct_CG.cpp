@@ -283,7 +283,7 @@ main(int argc, char** argv)
         GPUTimer timer("\nRunning conjugate gradient solver");
         if (vm.count("initX"))
         {
-            result = solver.solve_from_rhs(init_guess_vol);
+            result = solver.solve_from_rhs(&cu_init_guess_vol);
         }
         else
         {
