@@ -217,6 +217,7 @@ main(int argc, char** argv)
     I->set_weight(reg_weight);
 
     hoCuCgSolver<float> solver;
+    solver.solve_from_rhs()
 
     solver.set_encoding_operator(E);
 
@@ -242,7 +243,7 @@ main(int argc, char** argv)
         cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol.get());
 
         std::cout << "Adding initial recon to solver_x0" << std::endl;
-        solver.set_x0(cu_init_guess_vol);
+        //solver.set_x0(cu_init_guess_vol);
     }
 
     /*  if (vm.count("TV")){
@@ -280,7 +281,13 @@ main(int argc, char** argv)
 
     {
         GPUTimer timer("\nRunning conjugate gradient solver");
-        result = solver.solve(&projections);
+        if (vm.count("initX")){
+            result = solver.solve_from_rhs(&init_guess_vol);
+        }
+        else
+        {
+            result = solver.solve(&projections);
+        }
     }
 
     write_nd_array<float>( result.get(), outputFile.c_str());
