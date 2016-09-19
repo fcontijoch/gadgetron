@@ -139,6 +139,8 @@ void hoCuConebeamProjectionOperator
                 float  weight = psi_psi*psi_psi/(sin_psi * sin_psi);
 
                 value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
+                printf("Doing cyl Det weight \n");
+
             }
             else
             {
@@ -153,6 +155,7 @@ void hoCuConebeamProjectionOperator
 
                 value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
             }
+            printf("Weight: x = %f, y= %f, value = %f\n",x,y,value);
             data[x+y*ps_dims_in_pixels[0]] = float(value);
 		}
 	}
