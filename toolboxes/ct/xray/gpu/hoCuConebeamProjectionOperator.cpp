@@ -129,8 +129,7 @@ void hoCuConebeamProjectionOperator
             if ( use_cyl_det )
             {
                 // If we want to use cylindrical detector geometry, change weights
-
-                //std::cout << "hoCuCBProjOper.cpp Cosine Weights Call Using Cylindrical Weights" << std::endl;
+                // THESE WEIGHTS NEEDED TO BE RECHECKED
                 double psi_psi = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
                 double ee = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
 
@@ -139,7 +138,6 @@ void hoCuConebeamProjectionOperator
                 float  weight = psi_psi*psi_psi/(sin_psi * sin_psi);
 
                 value = double(weight) * SAD * cosf(psi_psi)/ std::sqrt( SAD*SAD + e*e);
-                printf("Doing cyl Det weight \n");
 
             }
             //else
@@ -155,8 +153,10 @@ void hoCuConebeamProjectionOperator
 
                 double value_old = SAD / std::sqrt( SAD*SAD + s*s + v*v );
             //}
-            printf("Weight: x = %f, y= %f, value = %f, value_old = %f \n",x,y,value,value_old);
-            data[x+y*ps_dims_in_pixels[0]] = float(value_old);
+            //printf("Weight: x = %f, y= %f, value = %f, value_old = %f \n",x,y,value,value_old);
+            //FC: using old weights casue these are not correct
+
+                data[x+y*ps_dims_in_pixels[0]] = float(value_old);
 		}
 	}
 	cosine_weights_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&weights));
