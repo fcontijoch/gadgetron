@@ -243,7 +243,7 @@ main(int argc, char** argv)
         cu_init_guess_vol = boost::make_shared<hoCuNDArray<float>>(init_guess_vol.get());
 
         std::cout << "Adding initial recon to solver_x0" << std::endl;
-        //solver.set_x0(cu_init_guess_vol);
+        solver.set_x0(cu_init_guess_vol);
     }
 
     /*  if (vm.count("TV")){
