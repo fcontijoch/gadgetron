@@ -64,6 +64,7 @@ namespace Gadgetron{
             size_t NDim = this->dimensions_->size();
             for ( size_t d=0; d<NDim; d++ )
             {
+                printf("DimA: %f, DimB: %f \n",(*this->dimensions_)[d],(*dim)[d]);
                 if ( (*this->dimensions_)[d] != (*dim)[d] ) return false;
             }
 
