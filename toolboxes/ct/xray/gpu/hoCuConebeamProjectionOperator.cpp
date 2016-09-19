@@ -142,8 +142,8 @@ void hoCuConebeamProjectionOperator
                 printf("Doing cyl Det weight \n");
 
             }
-            else
-            {
+            //else
+            //{
 
                 double xx = (( double(x) / double(ps_dims_in_pixels[0])) - 0.5) * ps_dims_in_mm[0];
                 double yy = (( double(y) / double(ps_dims_in_pixels[1])) - 0.5) * ps_dims_in_mm[1];
@@ -153,10 +153,10 @@ void hoCuConebeamProjectionOperator
                 // Equation 10.1, page 386 in Computed Tomography 2nd edition, Jiang Hsieh
                 //
 
-                value = SAD / std::sqrt( SAD*SAD + s*s + v*v );
-            }
-            printf("Weight: x = %f, y= %f, value = %f\n",x,y,value);
-            data[x+y*ps_dims_in_pixels[0]] = float(value);
+                double value_old = SAD / std::sqrt( SAD*SAD + s*s + v*v );
+            //}
+            printf("Weight: x = %f, y= %f, value = %f, value_old = %f \n",x,y,value,value_old);
+            data[x+y*ps_dims_in_pixels[0]] = float(value_old);
 		}
 	}
 	cosine_weights_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&weights));
