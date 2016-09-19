@@ -217,7 +217,6 @@ main(int argc, char** argv)
     I->set_weight(reg_weight);
 
     hoCuCgSolver<float> solver;
-    solver.solve_from_rhs()
 
     solver.set_encoding_operator(E);
 
