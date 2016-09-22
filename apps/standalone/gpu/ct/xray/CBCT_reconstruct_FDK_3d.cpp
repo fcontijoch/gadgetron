@@ -49,8 +49,8 @@ int main(int argc, char** argv)
   std::string image_filename = (char*)parms.get_parameter('r')->get_string_value();
 
   //Get motion and ffs values
-  int device = arms.get_parameter('G')->get_int_value();
-  int ffs = arms.get_parameter('S')->get_int_value();
+  int device = parms.get_parameter('G')->get_int_value();
+  int ffs = parms.get_parameter('S')->get_int_value();
   floatd2 mot_X( parms.get_parameter('X')->get_float_value(0),
              parms.get_parameter('X')->get_float_value(1));
   floatd2 mot_Y( parms.get_parameter('Y')->get_float_value(0),
