@@ -29,11 +29,11 @@ int main(int argc, char** argv)
   parms.add_parameter( 'F', COMMAND_LINE_INT, 1, "Use filtered backprojection (fbp)", true, "1" );
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'D', COMMAND_LINE_INT, 1, "Number of downsamples of projection plate", true, "0" );
-  parms.add_parameter( 'X', COMMAND_LINE_FLOAT, 2, "Motion in X direction in mm");
-  parms.add_parameter( 'Y', COMMAND_LINE_FLOAT, 2, "Motion in Y direction in mm");
-  parms.add_parameter( 'Z', COMMAND_LINE_FLOAT, 2, "Motion in Z direction in mm");
-  parms.add_parameter( 'S', COMMAND_LINE_INT, 1, "Use XY flying focal spot (0 = no, 1 = yes)" );
-  parms.add_parameter( 'G', COMMAND_LINE_INT, 1, "Number of the device to use (0 indexed)" );
+  parms.add_parameter( 'X', COMMAND_LINE_FLOAT, 2, "Motion in X direction in mm",true,"0,0");
+  parms.add_parameter( 'Y', COMMAND_LINE_FLOAT, 2, "Motion in Y direction in mm",true,"0,0");
+  parms.add_parameter( 'Z', COMMAND_LINE_FLOAT, 2, "Motion in Z direction in mm",true,"0,0");
+  parms.add_parameter( 'S', COMMAND_LINE_INT, 1, "Use XY flying focal spot (0 = no, 1 = yes)",true,"0");
+  parms.add_parameter( 'G', COMMAND_LINE_INT, 1, "Number of the device to use (0 indexed)",true,"0" );
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
