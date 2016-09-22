@@ -144,7 +144,7 @@ int main(int argc, char** argv)
   float mot_Y_extent = mot_Y[1] - mot_Y[0];
   float mot_Z_extent = mot_Z[1] - mot_Z[0];
 
-  std::vector<floatd3> mot_XYZ;
+  /*std::vector<floatd3> mot_XYZ;
   float mot_X_val;
   float mot_Y_val;
   float mot_Z_val;
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
   }
 
   E->set_motionXYZ_vector(mot_XYZ);
-
+*/
 
   CommandLineParameter *parm = parms.get_parameter('P');
   if( parm && parm->get_is_set() )
