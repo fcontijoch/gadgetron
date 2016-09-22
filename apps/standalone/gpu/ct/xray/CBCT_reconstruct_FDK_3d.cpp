@@ -192,10 +192,10 @@ int main(int argc, char** argv)
   // - just to report more accurate timings
   //
 
-  cudaSetDevice(device);
+  /*cudaSetDevice(device);
   cudaDeviceReset();
   cudaThreadSynchronize();
-
+*/
   //
   // Standard 3D FDK reconstruction
   //
