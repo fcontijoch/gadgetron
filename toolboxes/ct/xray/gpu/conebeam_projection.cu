@@ -874,7 +874,8 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   floatd2 ps_dims_in_mm,
                                   float SDD,
                                   float SAD,
-                                  bool ffs)
+                                  bool ffs,
+                                  floatd3 center_shift_in_mm)
 {
     //
     // Validate the input
@@ -1974,6 +1975,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
                                         bool accumulate,
                                         std::vector<floatd3> mot_XYZ,
                                         bool ffs,
+                                        floatd3 center_shift_in_mm,
                                         cuNDArray<float> *cosine_weights,
                                         cuNDArray<float> *frequency_filter
                                         )
