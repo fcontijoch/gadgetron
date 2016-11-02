@@ -115,8 +115,6 @@ namespace Gadgetron{
       center_shift_in_mm_ = center_shift_in_mm;
     }
 
-
-
     inline void set_motionXYZ_vector( std::vector<floatd3> mot_XYZ){
         mot_XYZ_ = mot_XYZ;
     }

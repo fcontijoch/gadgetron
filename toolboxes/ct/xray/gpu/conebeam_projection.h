@@ -64,7 +64,9 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
                 floatd2 ps_dims_in_mm,
                 float SDD,
                 float SAD,
-                bool ffs_
+                bool ffs_,
+                floatd3 center_shift_in_mm
+
 
   );
   
@@ -108,6 +110,7 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
         bool accumulate,
         std::vector<floatd3> mot_XYZ,
         bool ffs_,
+        floatd3 center_shift_in_mm,
         cuNDArray<float> *cosine_weights = 0x0,
         cuNDArray<float> *frequency_filter = 0x0
   );
