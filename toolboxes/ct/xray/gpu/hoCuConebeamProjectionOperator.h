@@ -111,6 +111,11 @@ namespace Gadgetron{
       ffs_ = ffs;
     }
 
+    inline void set_use_center_shift( floatd3 center_shift_in_mm ){
+      center_shift_in_mm_ = center_shift_in_mm;
+    }
+
+
 
     inline void set_motionXYZ_vector( std::vector<floatd3> mot_XYZ){
         mot_XYZ_ = mot_XYZ;
@@ -163,6 +168,7 @@ namespace Gadgetron{
     boost::shared_ptr<CBCT_acquisition> acquisition_;
     boost::shared_ptr<CBCT_binning> binning_;
     floatd3 is_dims_in_mm_;
+    floatd3 center_shift_in_mm_;
     float samples_per_pixel_;
     bool use_fbp_;
     bool use_cyl_det_;
