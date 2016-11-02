@@ -79,6 +79,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'c', COMMAND_LINE_INT, 1, "Detector Flag (bool) 0:flat, 1: cylcindrical", true,"0");
   parms.add_parameter( 'x', COMMAND_LINE_INT, 1, "Flying Focal Spot Flag (bool) 0:off, 1: on", true,"0");
   parms.add_parameter( 'D', COMMAND_LINE_INT, 1, "Device Selector", true,"1");
+  parms.add_parameter( 'C', COMMAND_LINE_FLOAT, 3, "Shift center of object mm (3d)", true, "0, 0, 0" );
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -146,6 +147,10 @@ int main(int argc, char** argv)
   bool use_cyl_det = bool(parms.get_parameter('c')->get_int_value());
 
   bool use_ffs = bool(parms.get_parameter('x')->get_int_value());
+
+  floatd3 center_shift_in_mm( parms.get_parameter('C')->get_float_value(0),
+             parms.get_parameter('C')->get_float_value(1),
+             parms.get_parameter('C')->get_float_value(2) );
 
   // Load or generate binning data
   //
@@ -259,6 +264,7 @@ int main(int argc, char** argv)
   // FC added new cylindrical option
   E->set_use_cylindrical_detector(use_cyl_det);
   E->set_use_flying_focal_spot(use_ffs);
+  E->set_use_center_shift(center_shift_in_mm);
 
   // Initialize the device
   // - just to report more accurate timings
