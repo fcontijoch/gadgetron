@@ -1219,7 +1219,8 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                                           float SDD,
                                           float SAD,
                                           bool accumulate,
-                                          bool ffs_)
+                                          bool ffs_,
+                                          floatd3 center_shift_in_mm)
 {
     // Image voxel to backproject into (pixel coordinate and index)
     //
@@ -2345,7 +2346,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
              ( image_device->get_data_ptr(), raw_angles, raw_offsets, raw_mot_XYZ,
                is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true, ffs);
+               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true, ffs, center_shift_in_mm);
 
         CHECK_FOR_CUDA_ERROR();
         // printf("Invoke Kernel .... DONE\n");
