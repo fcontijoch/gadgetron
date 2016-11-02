@@ -2399,9 +2399,9 @@ int, intd3, floatd3, floatd2, float, float, bool, bool, bool, cuNDArray<float>*,
 
 template void conebeam_backwards_projection_cyl<false>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, floatd3, cuNDArray<float>*, cuNDArray<float>*);
 
 template void conebeam_backwards_projection_cyl<true>
 ( hoCuNDArray<float>*, hoCuNDArray<float>*, std::vector<float>, std::vector<floatd2>, std::vector<unsigned int>,
-int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, cuNDArray<float>*, cuNDArray<float>*);
+int, intd3, floatd3, floatd2, float, float, bool, bool, bool, std::vector<floatd3>, bool, floatd3, cuNDArray<float>*, cuNDArray<float>*);
 }
