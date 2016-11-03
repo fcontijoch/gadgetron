@@ -796,8 +796,6 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
 
         // Perform integration only inside the bounding cylinder of the image volume
-        //
-
         const floatd3 vec_over_dir = (is_dims_in_mm-startPoint)/dir;
         const floatd3 vecdiff_over_dir = (-is_dims_in_mm-startPoint)/dir;
         const floatd3 start = amin(vecdiff_over_dir, vec_over_dir);
