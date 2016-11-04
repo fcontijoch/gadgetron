@@ -822,7 +822,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         floatd3 is_low_bounds = center_shift_in_mm - is_dims_in_mm/2;
         floatd3 is_upp_bounds = center_shift_in_mm + is_dims_in_mm/2;
 
-        for (int dim_idx = 0; dim_idx<3l dim_idx++)
+        for (int dim_idx = 0; dim_idx<3; dim_idx++)
         {
             // For each dimension, lets figure out the bounds
             px = startPoint[dim_idx]; // Position of the starting point in this dimension
