@@ -811,8 +811,13 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
         float tnear = -9999.0;
         float tfar = -9999.0;
         int flag_val = 0;
-        float px t1a t2a t1 t2;
-        float a1 aend;
+        float px = 0.0f;
+        float t1a = 0.0f;
+        float t2a = 0.0f;
+        float t1 = 0.0f;
+        float t2 = 0.0f;
+        float a1 = 0.5f;
+        float aend = 0.6f;
 
         floatd3 is_low_bounds = center_shift_in_mm - is_dims_in_mm/2;
         floatd3 is_upp_bounds = center_shift_in_mm + is_dims_in_mm/2;
