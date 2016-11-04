@@ -796,6 +796,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
 
         // Perform integration only inside the bounding cylinder of the image volume
+        /*
         const floatd3 vec_over_dir = (is_dims_in_mm-startPoint)/dir;
         const floatd3 vecdiff_over_dir = (-is_dims_in_mm-startPoint)/dir;
         const floatd3 start = amin(vecdiff_over_dir, vec_over_dir);
@@ -803,6 +804,60 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
         float a1 = fmax(max(start),0.0f);
         float aend = fmin(min(end),1.0f);
+        */
+
+
+        // FC: Insert new box algorithm allowing for shift of box
+        float tnear = -9999.0;
+        float tfar = -9999.0;
+        int flag_val = 0;
+        float px t1a t2a t1 t2;
+        float a1 aend;
+
+        floatd3 is_low_bounds = center_shift_in_mm - is_dims_in_mm/2;
+        floatd3 is_upp_bounds = center_shift_in_mm + is_dims_in_mm/2;
+
+        for (int dim_idx = 0; dim_idx<3l dim_idx++)
+        {
+            // For each dimension, lets figure out the bounds
+            px = startPoint[dim_idx]; // Position of the starting point in this dimension
+            t1a = is_low_bounds[dim_idx] - px / dir[dim_idx];
+            t2a = is_upp_bounds[dim_idx] - px / dir[dim_idx];
+
+            if (t1a>t2a) // If out of order, swap values
+            {
+                t1 = t2a;
+                t2 = t1a;
+            }
+            else {
+                t1 = t1a;
+                t2 = t2a;
+            }
+            // Check if t1 is closer than tnear;
+            if (t1 > tnear)
+            {
+                tnear = t1;
+            }
+            // Check if t2 is closer than tfar;
+            if (t2 < tfar)
+            {
+                tfar = t2;
+            }
+
+            // Check for error
+            if (tnear > tfar)
+            {
+                flag_val += 1; // If flag_val > 0, then it missed
+            }
+
+        }
+        if (flag_val == 0)
+        {
+            a1=tnear;
+            aend=tfar;
+        }
+
+
         startPoint += a1*dir;
 
         const float sampling_distance = norm((aend-a1)*dir)/num_samples_per_ray;
@@ -825,7 +880,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 #ifdef FLIP_Z_AXIS
         dir[2] *= -1.0f;
 #endif
-        dir /= float(num_samples_per_ray); // now in step size units
+        dir *= (aend-a1)/float(num_samples_per_ray); // now in step size units
 
 
         //
