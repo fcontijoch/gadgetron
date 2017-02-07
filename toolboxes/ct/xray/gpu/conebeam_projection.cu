@@ -1321,7 +1321,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
 #endif
 
         // FC added FOV shift to point location
-        is_nc += center_shift_in_mm;
+        //is_nc += center_shift_in_mm;
 
         // Image space coordinate in metric units
         //
