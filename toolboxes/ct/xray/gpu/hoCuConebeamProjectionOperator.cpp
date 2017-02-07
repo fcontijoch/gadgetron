@@ -49,7 +49,7 @@ void hoCuConebeamProjectionOperator
 #pragma omp parallel for
 #endif
 
-    if( ramp_flag_ )
+    if ( ramp_flag_ )
     {
         for( int i=0; i<dims[0]; i++ ) {
             float k = float(i);
