@@ -37,25 +37,42 @@ void hoCuConebeamProjectionOperator
 	if( !preprocessed_ )
 		throw std::runtime_error("Error: hoCuConebeamProjectionOperator::compute_default_frequency_filter() : setup not performed");
 
-	std::vector<size_t> dims;
-	dims.push_back(acquisition_->get_projections()->get_size(0)+1);
+    std::vector<size_t> dims;
+    dims.push_back(acquisition_->get_projections()->get_size(0)+1);
 
-	hoCuNDArray<float> host_weights(&dims);
-	float* data = host_weights.get_data_ptr();
+    hoCuNDArray<float> host_weights(&dims);
+    float* data = host_weights.get_data_ptr();
 
-	const float A2 = dims[0]*dims[0];
+    const float A2 = dims[0]*dims[0];
 
 #ifdef USE_OMP
 #pragma omp parallel for
-#endif    
-	for( int i=0; i<dims[0]; i++ ) {
-		float k = float(i);
-		data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
-	}
+#endif
 
-	frequency_filter_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&host_weights));
-	float sum = asum(frequency_filter_.get());
-	*frequency_filter_ *= (dims[0]/sum);
+    if( ramp_flag_ )
+    {
+        for( int i=0; i<dims[0]; i++ ) {
+            float k = float(i);
+            data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
+        }
+
+        frequency_filter_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&host_weights));
+        float sum = asum(frequency_filter_.get());
+        *frequency_filter_ *= (dims[0]/sum);
+    }
+    else
+    {
+        for( int i=0; i<dims[0]; i++ ) {
+            float k = float(i);
+            //data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
+            data[i] = k;
+        }
+
+        frequency_filter_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&host_weights));
+        float sum = asum(frequency_filter_.get());
+        *frequency_filter_ *= (1.65712322*dims[0]/sum);
+
+    }
 }
 
 void hoCuConebeamProjectionOperator

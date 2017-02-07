@@ -21,6 +21,7 @@ namespace Gadgetron{
       samples_per_pixel_ = 1.5f;
       projections_per_batch_ = 20;
       use_fbp_ = false;
+      ramp_flag_ = 0;
       short_scan_ = false;
       preprocessed_ = false;
       use_offset_correction_ = false;
@@ -102,6 +103,11 @@ namespace Gadgetron{
     inline void set_use_filtered_backprojection( bool use_fbp ){
       use_fbp_ = use_fbp;      
     }
+
+    inline void set_ramp_flag( bool ramp_flag ){
+      ramp_flag_ = ramp_flag;
+    }
+
     
     inline void set_use_cylindrical_detector( bool use_cyl_det ){
       use_cyl_det_ = use_cyl_det;      
@@ -171,6 +177,7 @@ namespace Gadgetron{
     bool use_fbp_;
     bool use_cyl_det_;
     bool ffs_;
+    bool ramp_flag_;
     unsigned int projections_per_batch_;
     bool preprocessed_;
     bool short_scan_;

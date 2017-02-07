@@ -34,6 +34,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'Z', COMMAND_LINE_FLOAT, 2, "Motion in Z direction in mm",true,"0,0");
   parms.add_parameter( 'S', COMMAND_LINE_INT, 1, "Use XY flying focal spot (0 = no, 1 = yes)",true,"0");
   parms.add_parameter( 'G', COMMAND_LINE_INT, 1, "Number of the device to use (0 indexed)",true,"0" );
+  parms.add_parameter( 'R', COMMAND_LINE_INT, 1, "FDK Filter (0: Hanning, 1: Ramp)",true,"0" );
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -57,6 +58,8 @@ int main(int argc, char** argv)
              parms.get_parameter('Y')->get_float_value(1));
   floatd2 mot_Z( parms.get_parameter('Z')->get_float_value(0),
              parms.get_parameter('Z')->get_float_value(1));
+  bool ramp_flag = parms.get_parameter('R')->get_int_value();
+
 
   // Load acquisition data
   //
@@ -137,6 +140,7 @@ int main(int argc, char** argv)
   E->set_use_filtered_backprojection(use_fbp);
   E->set_use_cylindrical_detector(use_cyl_det);
   E->set_use_flying_focal_spot(bool(ffs));
+  E->set_ramp_flag(ramp_flag);
 
   //FC add motion vector
   // FC create vector of dX, dY, and dZ over the acquisitions
