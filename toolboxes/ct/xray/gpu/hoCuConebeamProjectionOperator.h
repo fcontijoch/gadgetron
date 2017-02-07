@@ -21,7 +21,7 @@ namespace Gadgetron{
       samples_per_pixel_ = 1.5f;
       projections_per_batch_ = 20;
       use_fbp_ = false;
-      ramp_flag_ = 0;
+      ramp_flag_ = false;
       short_scan_ = false;
       preprocessed_ = false;
       use_offset_correction_ = false;
