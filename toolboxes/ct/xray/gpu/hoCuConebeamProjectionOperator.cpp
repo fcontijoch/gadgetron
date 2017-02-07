@@ -45,12 +45,12 @@ void hoCuConebeamProjectionOperator
 
     const float A2 = dims[0]*dims[0];
 
-#ifdef USE_OMP
-#pragma omp parallel for
-#endif
 
     if ( !ramp_flag_ )
     {
+#ifdef USE_OMP
+#pragma omp parallel for
+#endif
         for( int i=0; i<dims[0]; i++ ) {
             float k = float(i);
             data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
@@ -62,6 +62,9 @@ void hoCuConebeamProjectionOperator
     }
     else
     {
+#ifdef USE_OMP
+#pragma omp parallel for
+#endif
         for( int i=0; i<dims[0]; i++ ) {
             float k = float(i);
             //data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
