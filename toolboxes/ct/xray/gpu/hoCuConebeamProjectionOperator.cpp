@@ -247,7 +247,7 @@ void hoCuConebeamProjectionOperator
                     mot_XYZ_,
                     binning_->get_bin(b),
                     projections_per_batch_, samples_per_pixel_,
-                     , ps_dims_in_mm,
+                    is_dims_in_mm_, ps_dims_in_mm,
                               SDD, SAD,ffs_,center_shift_in_mm_);
         }
         else
