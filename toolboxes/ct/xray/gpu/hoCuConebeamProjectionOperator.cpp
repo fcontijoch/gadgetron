@@ -70,7 +70,7 @@ void hoCuConebeamProjectionOperator
 
         frequency_filter_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&host_weights));
         float sum = asum(frequency_filter_.get());
-        *frequency_filter_ *= (1.65712322*dims[0]/sum);
+        *frequency_filter_ *= (float(1.65712322)*dims[0]/sum);
 
     }
 }
