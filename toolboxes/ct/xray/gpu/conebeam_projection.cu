@@ -2166,7 +2166,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
     thrust::device_vector<floatd2> offsets_devVec(offsets_vec);
     thrust::device_vector<floatd3> mot_XYZ_devVec(mot_XYZ_vec);
 
-    // printf("Allocating Angles, Offsets, Projections .... DONE\n");
+    printf("Allocating Angles, Offsets, Projections .... DONE\n");
 
     // From/to for the first batch
     // - to enable working streams...
@@ -2276,7 +2276,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
             // Apply frequency filter
             // - use zero padding to avoid the cyclic boundary conditions induced by the fft
             //
-            // printf("Apply Freq Filter .... \n");
+            printf("Apply Freq Filter .... \n");
 
             std::vector<size_t> batch_dims = *projections_batch->get_dimensions();
             uint64d3 pad_dims(batch_dims[0]<<1, batch_dims[1], batch_dims[2]);
@@ -2286,7 +2286,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
             cb_ifft( complex_projections.get(), padded_projections.get() );
             uint64d3 crop_offsets(batch_dims[0]>>1, 0, 0);
             crop<float,3>( crop_offsets, padded_projections.get(), projections_batch );
-            // printf("Apply Freq Filter .... DONE\n");
+            printf("Apply Freq Filter .... DONE\n");
 
             // Apply offset correction
             // - for half fan mode, sag correction etc.
