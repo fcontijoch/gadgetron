@@ -49,6 +49,7 @@ void hoCuConebeamProjectionOperator
 
     if ( !ramp_flag_ )
     {
+        std::cout << "hoCuCBProjOper.cpp Doing Old Filter" << std::endl;
 #ifdef USE_OMP
 #pragma omp parallel for
 #endif
@@ -63,6 +64,7 @@ void hoCuConebeamProjectionOperator
     }
     else
     {
+           std::cout << "hoCuCBProjOper.cpp Doing New Filter" << std::endl;
 #ifdef USE_OMP
 #pragma omp parallel for
 #endif
