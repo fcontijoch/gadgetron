@@ -155,7 +155,7 @@ int main(int argc, char** argv)
   floatd3 mot_XYZ_val;
   size_t numProjs = acquisition->get_projections()->get_size(2);
 
-  std::cout << "CBCT_reconstruct_CG: Motion Vector " << std::endl;
+  std::cout << "FDK_3d: Motion Vector " << std::endl;
   if (bool(ffs))
   {
       // For FFS, we have half as many projection positions but we sample them twice
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 
   E->set_motionXYZ_vector(mot_XYZ);
 
-
+  std::cout << "FDK_3d: Get Parameter P " << std::endl;
   CommandLineParameter *parm = parms.get_parameter('P');
   if( parm && parm->get_is_set() )
     E->set_num_projections_per_batch( parm->get_int_value() );
@@ -203,6 +203,7 @@ int main(int argc, char** argv)
   //
   // Standard 3D FDK reconstruction
   //
+  std::cout << "FDK_3d: Start Recon " << std::endl;
 
   {
     GPUTimer timer("Running 3D FDK reconstruction");

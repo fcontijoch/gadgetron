@@ -33,6 +33,7 @@ void hoCuConebeamProjectionOperator
 	//   - however, the size of the filter still equals the full size of the 1D dimension to filter +1 ...
 	//   - ... due to zero padding and cufft expecting an additional element.
 	//
+    std::cout << "hoCuCBProjOper.cpp Start Freq Filter Flag: " << ramp_flag_ << std::endl;
 
 	if( !preprocessed_ )
 		throw std::runtime_error("Error: hoCuConebeamProjectionOperator::compute_default_frequency_filter() : setup not performed");
