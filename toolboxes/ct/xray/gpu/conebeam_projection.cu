@@ -685,8 +685,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
                                          float SDD,
                                          float SAD,
                                          int num_samples_per_ray,
-                                         bool ffs_,
-                                         floatd3 center_shift_in_mm)
+                                         bool ffs_)
 {
     const int idx = blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x+threadIdx.x;
     const int num_elements = prod(ps_dims_in_pixels_int)*num_projections;
@@ -796,7 +795,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
 
         // Perform integration only inside the bounding cylinder of the image volume
-        /*
+
         const floatd3 vec_over_dir = (is_dims_in_mm-startPoint)/dir;
         const floatd3 vecdiff_over_dir = (-is_dims_in_mm-startPoint)/dir;
         const floatd3 start = amin(vecdiff_over_dir, vec_over_dir);
@@ -804,11 +803,11 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
 
         float a1 = fmax(max(start),0.0f);
         float aend = fmin(min(end),1.0f);
-        */
+
 
 
         // FC: Insert new box algorithm allowing for shift of box
-        float tnear = -9999.0;
+        /*float tnear = -9999.0;
         float tfar = -9999.0;
         int flag_val = 0;
         float px = 0.0f;
@@ -861,6 +860,7 @@ conebeam_forwards_projection_kernel_cyl( float * __restrict__ projections,
             a1=tnear;
             aend=tfar;
         }
+        */
 
 
         startPoint += a1*dir;
@@ -933,8 +933,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   floatd2 ps_dims_in_mm,
                                   float SDD,
                                   float SAD,
-                                  bool ffs,
-                                  floatd3 center_shift_in_mm)
+                                  bool ffs)
 {
     //
     // Validate the input
@@ -1065,7 +1064,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
         conebeam_forwards_projection_kernel_cyl<<< dimGrid, dimBlock, 0, mainStream >>>
                 ( projections_DevPtr, raw_angles, raw_offsets, raw_mot_XYZ,
                   is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-                  projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x),ffs, center_shift_in_mm);
+                  projections_in_batch, SDD, SAD, samples_per_pixel*float(matrix_size_x),ffs);
 
         // If not initial batch, start copying the old stuff
         //
@@ -1278,8 +1277,7 @@ conebeam_backwards_projection_cyl_kernel( float * __restrict__ image,
                                           float SDD,
                                           float SAD,
                                           bool accumulate,
-                                          bool ffs_,
-                                          floatd3 center_shift_in_mm)
+                                          bool ffs_)
 {
     // Image voxel to backproject into (pixel coordinate and index)
     //
@@ -2038,7 +2036,6 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
                                         bool accumulate,
                                         std::vector<floatd3> mot_XYZ,
                                         bool ffs,
-                                        floatd3 center_shift_in_mm,
                                         cuNDArray<float> *cosine_weights,
                                         cuNDArray<float> *frequency_filter
                                         )
@@ -2408,7 +2405,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
         conebeam_backwards_projection_cyl_kernel<FBP><<< dimGrid, dimBlock, 0, mainStream >>>
              ( image_device->get_data_ptr(), raw_angles, raw_offsets, raw_mot_XYZ,
                is_dims_in_pixels, is_dims_in_mm, ps_dims_in_pixels, ps_dims_in_mm,
-               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true, ffs, center_shift_in_mm);
+               projections_in_batch, num_projections_in_bin, SDD, SAD, (batch==0) ? accumulate : true, ffs);
 
         CHECK_FOR_CUDA_ERROR();
         // printf("Invoke Kernel .... DONE\n");
