@@ -64,7 +64,7 @@ void apply_offset_correct(hoCuNDArray<float>* projections,std::vector<floatd2>& 
                 floatd2 ps_dims_in_mm,
                 float SDD,
                 float SAD,
-                bool ffs_,
+                bool ffs_
   );
   
   // Backprojection of a set of projections onto a 3D volume.
