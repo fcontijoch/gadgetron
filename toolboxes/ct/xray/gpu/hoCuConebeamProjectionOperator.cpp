@@ -353,7 +353,7 @@ void hoCuConebeamProjectionOperator
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                          mot_XYZ_,ffs_, cosine_weights_.get(), frequency_filter_.get());
+                          mot_XYZ_, ffs_, cosine_weights_.get(), frequency_filter_.get());
             }
             else
             {
