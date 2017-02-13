@@ -876,6 +876,7 @@ conebeam_forwards_projection_cyl(hoCuNDArray<float> *projections,
                                   float SAD,
                                   bool ffs)
 {
+    printf("conbeam_projection.cu - Start BackProject_Cyl Iter \n");
     //
     // Validate the input
     //
@@ -1978,7 +1979,7 @@ void conebeam_backwards_projection_cyl( hoCuNDArray<float> *projections,
                                         cuNDArray<float> *frequency_filter
                                         )
 {
-    // printf("conbeam_projection.cu - Start BackProject_Cyl Kernel \n");
+    printf("conbeam_projection.cu - Start BackProject_Cyl FBP \n");
 
     printf("Input Parameters....\n");
     printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
