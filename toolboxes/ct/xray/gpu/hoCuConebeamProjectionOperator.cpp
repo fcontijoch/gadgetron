@@ -344,6 +344,8 @@ void hoCuConebeamProjectionOperator
             if (use_cyl_det_)
             {
                 std::cout << "hoCuCBProjOper.cpp mult_MH  - Call Conbebeam_backwards_projection_cyl func \n" << std::endl;
+                std::cout << "Parmeter ffs_: " << ffs_ << " \n" << std::endl;
+
 
                 conebeam_backwards_projection_cyl<true>
                         ( projections, &image_3d,
