@@ -345,7 +345,14 @@ void hoCuConebeamProjectionOperator
             {
                 std::cout << "hoCuCBProjOper.cpp mult_MH  - Call Conbebeam_backwards_projection_cyl func \n" << std::endl;
                 std::cout << "Parmeter ffs_: " << ffs_ << " \n" << std::endl;
-
+                std::cout << "Parmeter short_scan_: " << short_scan_ << " \n" << std::endl;
+                std::cout << "Parmeter use_offset_correction_: " << use_offset_correction_ << " \n" << std::endl;
+                printf("Input Parameters....\n");
+                printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
+                printf("Is_Dims_In_MM: X = %f , Y=%f, Z = %f\n",is_dims_in_mm_[0],is_dims_in_mm_[1],is_dims_in_mm_[2]);
+                printf("Ps_Dims_In_MM: X = %f , Y=%f\n",ps_dims_in_mm[0],ps_dims_in_mm[1]);
+                printf("SDD: %f \n",SDD);
+                printf("SAD: %f \n",SAD);
 
                 conebeam_backwards_projection_cyl<true>
                         ( projections, &image_3d,
