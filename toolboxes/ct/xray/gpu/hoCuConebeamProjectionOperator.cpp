@@ -296,14 +296,15 @@ void hoCuConebeamProjectionOperator
     printf("use_cyl_det_: %u \n", use_cyl_det_);
 
     // FC: Check that we have mot_XYZ_ vector
-    printf("hoCuCBProjOper.cpp print mot_XYZ_val \n");
+    /*
+     * printf("hoCuCBProjOper.cpp print mot_XYZ_val \n");
     floatd3 mot_XYZ_val;
     for( unsigned int i=0; i<projections->get_size(2); i++ )
     {
         mot_XYZ_val = mot_XYZ_[i];
         std::cout << "i =  " << i << ", x: " << mot_XYZ_val[0] << ", y: " << mot_XYZ_val[1] << ", z: " << mot_XYZ_val[2] << std::endl;
     }
-
+    */
 
 	for( int b=0; b<binning_->get_number_of_bins(); b++ ) {
 
@@ -344,15 +345,6 @@ void hoCuConebeamProjectionOperator
             if (use_cyl_det_)
             {
                 std::cout << "hoCuCBProjOper.cpp mult_MH  - Call Conbebeam_backwards_projection_cyl func \n" << std::endl;
-                std::cout << "Parmeter ffs_: " << ffs_ << " \n" << std::endl;
-                std::cout << "Parmeter short_scan_: " << short_scan_ << " \n" << std::endl;
-                std::cout << "Parmeter use_offset_correction_: " << use_offset_correction_ << " \n" << std::endl;
-                printf("Input Parameters....\n");
-                printf("Is_Dims_In_Pixels: X = %d , Y=%d, Z = %d\n",is_dims_in_pixels[0],is_dims_in_pixels[1],is_dims_in_pixels[2]);
-                printf("Is_Dims_In_MM: X = %f , Y=%f, Z = %f\n",is_dims_in_mm_[0],is_dims_in_mm_[1],is_dims_in_mm_[2]);
-                printf("Ps_Dims_In_MM: X = %f , Y=%f\n",ps_dims_in_mm[0],ps_dims_in_mm[1]);
-                printf("SDD: %f \n",SDD);
-                printf("SAD: %f \n",SAD);
 
                 conebeam_backwards_projection_cyl<true>
                         ( projections, &image_3d,
@@ -362,7 +354,7 @@ void hoCuConebeamProjectionOperator
                           projections_per_batch_,
                           is_dims_in_pixels, is_dims_in_mm_, ps_dims_in_mm,
                           SDD, SAD, short_scan_, use_offset_correction_, accumulate,
-                          mot_XYZ_, ffs_, cosine_weights_.get(), frequency_filter_.get());
+                          mot_XYZ_,ffs_, cosine_weights_.get(), frequency_filter_.get());
             }
             else
             {

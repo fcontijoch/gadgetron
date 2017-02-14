@@ -29,11 +29,6 @@ int main(int argc, char** argv)
   parms.add_parameter( 'F', COMMAND_LINE_INT, 1, "Use filtered backprojection (fbp)", true, "1" );
   parms.add_parameter( 'P', COMMAND_LINE_INT, 1, "Projections per batch", false );
   parms.add_parameter( 'D', COMMAND_LINE_INT, 1, "Number of downsamples of projection plate", true, "0" );
-  parms.add_parameter( 'X', COMMAND_LINE_FLOAT, 2, "Motion in X direction in mm",true,"0,0");
-  parms.add_parameter( 'Y', COMMAND_LINE_FLOAT, 2, "Motion in Y direction in mm",true,"0,0");
-  parms.add_parameter( 'Z', COMMAND_LINE_FLOAT, 2, "Motion in Z direction in mm",true,"0,0");
-  parms.add_parameter( 'S', COMMAND_LINE_INT, 1, "Use XY flying focal spot (0 = no, 1 = yes)",true,"0");
-  parms.add_parameter( 'G', COMMAND_LINE_INT, 1, "Number of the device to use (0 indexed)",true,"0" );
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -47,16 +42,6 @@ int main(int argc, char** argv)
   
   std::string acquisition_filename = (char*)parms.get_parameter('d')->get_string_value();
   std::string image_filename = (char*)parms.get_parameter('r')->get_string_value();
-
-  //Get motion and ffs values
-  int device = parms.get_parameter('G')->get_int_value();
-  int ffs = parms.get_parameter('S')->get_int_value();
-  floatd2 mot_X( parms.get_parameter('X')->get_float_value(0),
-             parms.get_parameter('X')->get_float_value(1));
-  floatd2 mot_Y( parms.get_parameter('Y')->get_float_value(0),
-             parms.get_parameter('Y')->get_float_value(1));
-  floatd2 mot_Z( parms.get_parameter('Z')->get_float_value(0),
-             parms.get_parameter('Z')->get_float_value(1));
 
   // Load acquisition data
   //
@@ -136,53 +121,6 @@ int main(int argc, char** argv)
   E->setup( acquisition, binning, is_dims_in_mm );
   E->set_use_filtered_backprojection(use_fbp);
   E->set_use_cylindrical_detector(use_cyl_det);
-  E->set_use_flying_focal_spot(bool(ffs));
-
-  //FC add motion vector
-  // FC create vector of dX, dY, and dZ over the acquisitions
-  float mot_X_extent = mot_X[1] - mot_X[0];
-  float mot_Y_extent = mot_Y[1] - mot_Y[0];
-  float mot_Z_extent = mot_Z[1] - mot_Z[0];
-
-  std::vector<floatd3> mot_XYZ;
-  float mot_X_val;
-  float mot_Y_val;
-  float mot_Z_val;
-  floatd3 mot_XYZ_val;
-  size_t numProjs = acquisition->get_projections()->get_size(2);
-
-  std::cout << "CBCT_reconstruct_CG: Motion Vector " << std::endl;
-  if (bool(ffs))
-  {
-      // For FFS, we have half as many projection positions but we sample them twice
-      for( unsigned int i=0; i<numProjs/2; i++ )
-      {
-          mot_X_val = mot_X[0] + mot_X_extent*i/(numProjs/2);
-          mot_Y_val = mot_Y[0] + mot_Y_extent*i/(numProjs/2);
-          mot_Z_val = mot_Z[0] + mot_Z_extent*i/(numProjs/2);
-          //std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
-          mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
-          // Push the values twice
-          mot_XYZ.push_back(mot_XYZ_val);
-          mot_XYZ.push_back(mot_XYZ_val);
-      }
-  }
-  else
-  {
-      for( unsigned int i=0; i<numProjs; i++ )
-      {
-          mot_X_val = mot_X[0] + mot_X_extent*i/numProjs;
-          mot_Y_val = mot_Y[0] + mot_Y_extent*i/numProjs;
-          mot_Z_val = mot_Z[0] + mot_Z_extent*i/numProjs;
-          //std::cout << "i =  " << i << ", x: " << mot_X_val << ", y: " << mot_Y_val<< ", z: " << mot_Z_val << std::endl;
-          mot_XYZ_val = floatd3(mot_X_val,mot_Y_val,mot_Z_val);
-
-          mot_XYZ.push_back(mot_XYZ_val);
-      }
-  }
-
-  E->set_motionXYZ_vector(mot_XYZ);
-
 
   CommandLineParameter *parm = parms.get_parameter('P');
   if( parm && parm->get_is_set() )
@@ -192,8 +130,6 @@ int main(int argc, char** argv)
   // - just to report more accurate timings
   //
 
-  cudaSetDevice(device);
-  cudaDeviceReset();
   cudaThreadSynchronize();
 
   //
