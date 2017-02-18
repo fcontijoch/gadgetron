@@ -50,7 +50,15 @@ void hoCuConebeamProjectionOperator
 #endif    
 	for( int i=0; i<dims[0]; i++ ) {
 		float k = float(i);
-		data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
+        if( rl_ )
+        {
+            data[i] = k;
+        }
+        else
+        {
+            data[i] = k*A2/(A2-k*k)*std::exp(-A2/(A2-k*k)); // From Guo et al, Journal of X-Ray Science and Technology 2011, doi: 10.3233/XST-2011-0294
+        }
+
 	}
 
 	frequency_filter_ = boost::shared_ptr< cuNDArray<float> >(new cuNDArray<float>(&host_weights));

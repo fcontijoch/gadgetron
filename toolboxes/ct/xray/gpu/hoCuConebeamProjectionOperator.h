@@ -26,6 +26,7 @@ namespace Gadgetron{
       use_offset_correction_ = false;
       allow_offset_correction_override_ = true;
       ffs_ = false;
+      rl_ = false;
     }
 
     virtual ~hoCuConebeamProjectionOperator() {}
@@ -111,6 +112,10 @@ namespace Gadgetron{
       ffs_ = ffs;
     }
 
+    inline void set_use_rl_filter( bool rl ){
+      rl_ = rl;
+    }
+
 
     inline void set_motionXYZ_vector( std::vector<floatd3> mot_XYZ){
         mot_XYZ_ = mot_XYZ;
@@ -167,6 +172,7 @@ namespace Gadgetron{
     bool use_fbp_;
     bool use_cyl_det_;
     bool ffs_;
+    bool rl_;
     unsigned int projections_per_batch_;
     bool preprocessed_;
     bool short_scan_;

@@ -33,6 +33,7 @@ int main(int argc, char** argv)
   parms.add_parameter( 'Y', COMMAND_LINE_FLOAT, 2, "Motion in Y direction in mm",true,"0,0");
   parms.add_parameter( 'Z', COMMAND_LINE_FLOAT, 2, "Motion in Z direction in mm",true,"0,0");
   parms.add_parameter( 'S', COMMAND_LINE_INT, 1, "Use XY flying focal spot (0 = no, 1 = yes)",true,"0");
+  parms.add_parameter( 'R', COMMAND_LINE_INT, 1, "Use Hanning or RL Filter (0 = Hanning, 1 = RL)",true,"0");
 
   parms.parse_parameter_list(argc, argv);
   if( parms.all_required_parameters_set() ) {
@@ -115,6 +116,9 @@ int main(int argc, char** argv)
   // Get FFS value
   int ffs = parms.get_parameter('S')->get_int_value();
 
+  // Get RL value
+  int rl = parms.get_parameter('R')->get_int_value();
+
   // Allocate array to hold the result
   //
   
@@ -136,7 +140,7 @@ int main(int argc, char** argv)
   E->set_use_filtered_backprojection(use_fbp);
   E->set_use_cylindrical_detector(use_cyl_det);
   E->set_use_flying_focal_spot(bool(ffs));
-
+  E->set_use_rl_filter(bool(rl));
   CommandLineParameter *parm = parms.get_parameter('P');
   if( parm && parm->get_is_set() )
     E->set_num_projections_per_batch( parm->get_int_value() );
